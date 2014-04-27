@@ -69,10 +69,6 @@ renderResponse = module.exports.render = (req, res, template, data, headerOption
       return 
     if fileImporter
       html = appendJsAndCss html, fileImporter
-      # fileImporter.emit 'export', template, {
-      #   jsList : fileImporter.getFiles 'js'
-      #   cssList : fileImporter.getFiles 'css'
-      # }
     _.defaults headerOptions, {
       'Content-Type' :'text/html'
     }
@@ -141,6 +137,7 @@ appendJsAndCss = (html, fileImporter) ->
   isProductionMode = process.env.NODE_ENV == 'production'
   html = html.replace '<!--CSS_FILES_CONTAINER-->', fileImporter.exportCss isProductionMode
   html = html.replace '<!--JS_FILES_CONTAINER-->', fileImporter.exportJs isProductionMode
+  return
 
 ###*
    * resIsAvailable 判断response是否可用

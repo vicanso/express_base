@@ -1,4 +1,4 @@
-seajs.use ['jquery', 'underscore', 'Backbone'], ($, _, Backbone) ->
+seajs.use ['jquery', 'underscore', 'Backbone', 'jtLazyLoad'], ($, _, Backbone, JTLazyLoad) ->
 
 
   if CONFIG.env == 'development'

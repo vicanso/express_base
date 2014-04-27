@@ -1,6 +1,7 @@
 seajs.config {
-  base : '/static/'
-  # alias : 
+  base : CONFIG.staticUrlPrefix
+  alias : 
+    'jtLazyLoad' : 'components/jtlazy_load/dest/jtlazy_load.js'
 }
 
 define 'jquery', ->

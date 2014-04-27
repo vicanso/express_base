@@ -23,7 +23,4 @@ html(lang='zh-CN')
   //JS_FILES_CONTAINER
   if CONFIG.env == 'development'
     script.
-      if(!window.LOAD_FILES){
-        window.LOAD_FILES = [];
-      }
-      LOAD_FILES = LOAD_FILES.concat(!{JSON.stringify(fileImporter.getFiles('css').concat(fileImporter.getFiles('js')))});
+      window.IMPORT_FILES = !{JSON.stringify(fileImporter.getFiles('css').concat(fileImporter.getFiles('js')))};

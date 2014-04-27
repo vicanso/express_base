@@ -6,6 +6,23 @@ do ->
   .parse process.argv
 
 
-module.exports.port = program.port || 10000
+exports.port = program.port || 10000
 
-module.exports.env = process.env.NODE_ENV || 'development'
+exports.env = process.env.NODE_ENV || 'development'
+
+###*
+ * [staticUrlPrefix 静态文件url前缀]
+ * @type {String}
+###
+exports.staticUrlPrefix = '/static'
+
+
+exports.redis =
+  port : '10010'
+  host : 'black'
+  password : 'redis pwd'
+
+exports.session = 
+  secret : 'jenny&tree'
+  key : 'vicanso'
+  ttl : 3600

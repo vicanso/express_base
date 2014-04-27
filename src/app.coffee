@@ -8,6 +8,8 @@ initAppSetting = (app) ->
 
   app.locals.CONFIG =
     env : config.env
+    staticUrlPrefix : config.staticUrlPrefix
+  return
 
 initServer = ->
   express = require 'express'
@@ -19,6 +21,12 @@ initServer = ->
   app.use require('morgan')() if config.env == 'production'
 
   serveStatic = require 'serve-static'
+  ###*
+   * [staticHandler 静态文件处理]
+   * @param  {[type]} mount      [description]
+   * @param  {[type]} staticPath [description]
+   * @return {[type]}            [description]
+  ###
   staticHandler = (mount, staticPath) ->
     staticHandler = serveStatic staticPath
     
@@ -56,5 +64,15 @@ initServer = ->
 
   console.log "server listen on: #{config.port}"
 
+if config.env == 'development'
+  initServer()
+else
+  JTCluster = require 'jtcluster'
+  options = 
+    slaveTotal : 2
+    slaveHandler : initServer
+  jtCluster = new JTCluster options
+  jtCluster.on 'log', (msg) ->
+    console.dir msg
 
-initServer()
+

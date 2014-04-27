@@ -1,3 +1,4 @@
+config = require '../config'
 fs = require 'fs'
 path = require 'path'
 _ = require 'underscore'
@@ -6,18 +7,29 @@ componentsFile = path.join __dirname, '../components.json'
 
 module.exports = (req, res, cbf) ->
   data = req.body
-  refreshComponents data.template, _.uniq data.files
+  refreshComponents data.template, _.uniq _.flatten data.files
   res.send ''
 
+###*
+ * [refreshComponents 更新components]
+ * @param  {[type]} template [description]
+ * @param  {[type]} files    [description]
+ * @return {[type]}          [description]
+###
 refreshComponents = (template, files) ->
   allComponents = JSON.parse fs.readFileSync componentsFile
   result = 
     js : []
     css : []
-  _.each files, (file) ->
+  url = require 'url'
+  staticUrlPrefix = config.staticUrlPrefix
+  _.each files, (fileUrl) ->
+    urlInfo = url.parse fileUrl
+    file = urlInfo.path
+    file = file.substring staticUrlPrefix.length if staticUrlPrefix == file.substring 0, staticUrlPrefix.length
     ext = path.extname file
     switch ext
-      when '.js' then result.js.push file if file != '/javascripts/sea_dev.js'
+      when '.js' then result.js.push file
       when '.css' then result.css.push file
       else throw new Error "unexpect file:#{file}"
   components = allComponents[template]

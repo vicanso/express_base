@@ -1,11 +1,13 @@
 router = require './helpers/router'
+config = require './config'
 requireTree = require 'require-tree'
 controllers = requireTree './controllers'
 FileImporter = require 'jtfileimporter'
+session = require './helpers/session'
 
 addImporter = (req, res, next) ->
   fileImporter = new FileImporter()
-  fileImporter.prefix '/static'
+  fileImporter.prefix config.staticUrlPrefix
   res.locals.fileImporter = fileImporter
   next()
 
@@ -18,7 +20,7 @@ routeInfos = [
   {
     route : '/'
     handler : controllers.home
-    middleware : [addImporter]
+    middleware : [session, addImporter]
     template : 'home'
   }
 ]

@@ -6,11 +6,12 @@
       "/components/backbone/backbone.js",
       "/components/seajs/sea.js",
       "/javascripts/sea_config.js",
+      "/components/jtlazy_load/dest/jtlazy_load.js",
       "/javascripts/home.js"
     ],
     "css": [
       "/components/normalize.css/normalize.css"
     ],
-    "updatedAt": "2014-04-26 18:53:22"
+    "updatedAt": "2014-04-26 20:44:22"
   }
 }

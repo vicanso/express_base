@@ -10,8 +10,9 @@
       "/javascripts/home.js"
     ],
     "css": [
-      "/components/normalize.css/normalize.css"
+      "/components/normalize.css/normalize.css",
+      "/stylesheets/home.css"
     ],
-    "updatedAt": "2014-04-26 20:44:22"
+    "modifiedAt": "2014-04-28 21:45:50"
   }
 }

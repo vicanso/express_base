@@ -1,5 +1,6 @@
 path = require 'path'
 fs = require 'fs'
+_ = require 'underscore'
 crc32 = require 'buffer-crc32'
 destPath = 'dest'
 srcPath = 'src'
@@ -8,6 +9,8 @@ staticsDestPath = path.join destPath, 'statics'
 buildPath = 'build'
 
 normalizePath = 'dest/statics/components/normalize.css'
+
+
 
 module.exports = (grunt) ->
   noneCopyFileExts = ['.coffee', '.js', '.styl']
@@ -142,6 +145,27 @@ module.exports = (grunt) ->
         ]
   }
 
+  grunt.registerTask 'seaConfig', ->
+    crc32Buf = fs.readFileSync path.join destPath, 'crc32.json'
+    crc32Infos = JSON.parse crc32Buf
+    configFile = path.join staticsDestPath, 'javascripts/sea_config.js'
+    str = fs.readFileSync configFile, 'utf8'
+    _.each crc32Infos, (crc32, name) ->
+      name = name.substring 1
+      str = str.replace name, "#{name}?v=#{crc32}" 
+    fs.writeFileSync configFile, str
+
+    # 合并静态文件文件
+  grunt.registerTask 'merge_static', ->
+    Merger = require 'jtmerger'
+    grunt.file.mkdir path.join staticsDestPath, 'merge'
+    components = require path.join __dirname, 'src/components.json'
+    mergeInfo = require path.join __dirname, 'src/merge.json'
+    merger = new Merger mergeInfo
+    result = merger.getMergeList components, staticsDestPath
+    _.each result, (files, saveFile) ->
+      merger.merge __dirname, saveFile, files
+
   grunt.registerMultiTask 'crc32', ->
     crc32Infos = {}
     @files.forEach (file) ->
@@ -161,4 +185,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-concat'
 
-  grunt.registerTask 'gen', ['clean:grunt', 'clean:dest', 'coffee', 'jshint', 'uglify', 'copy:build', 'stylus', 'cssmin', 'imageEmbed', 'crc32', 'clean:build']
+  grunt.registerTask 'gen', ['clean:grunt', 'clean:dest', 'coffee', 'jshint', 'uglify', 'copy:build', 'stylus', 'cssmin', 'crc32', 'seaConfig', 'merge_static', 'imageEmbed', 'crc32', 'copy:js', 'clean:build']
+  grunt.registerTask 'default', ['gen']

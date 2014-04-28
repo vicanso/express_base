@@ -7,6 +7,7 @@ _ = require 'underscore'
 ###
 module.exports.init = (app, routeInfos) ->
   _.each routeInfos, (routeInfo) ->
+    template = routeInfo.template
     handle = (req, res, next) ->
       next = _.once next
       cbf = (err, renderData, statusCode = 200, headerOptions = {}) ->
@@ -24,12 +25,10 @@ module.exports.init = (app, routeInfos) ->
         if !_.isNumber statusCode
           statusCode = 200
         if renderData
-          template = renderData.template || routeInfo.template
           res.status statusCode
           if statusCode > 299 && statusCode < 400
             res.redirect statusCode, renderData
           else if template
-            res.locals.TEMPLATE = template
             renderResponse req, res, template, renderData, headerOptions, next
           else
             if _.isObject renderData
@@ -40,6 +39,10 @@ module.exports.init = (app, routeInfos) ->
           res.send statusCode
       routeInfo.handler req, res, cbf, next
     middleware = routeInfo.middleware || []
+    addLocals = (req, res, next) ->
+      res.locals.template = template if template
+      next()
+    middleware.unshift addLocals
     routes = routeInfo.route
     if !_.isArray routes
       routes = [routes]

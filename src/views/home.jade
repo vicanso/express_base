@@ -1,4 +1,7 @@
 extends ./layout
 block bodyContainer
   p 测试页
-  - fileImporter.importJs('/javascripts/home.js')
+  .icon1
+  .icon2
+  - fileImporter.importJs('/javascripts/home.js');
+  - fileImporter.importCss('/stylesheets/home.css');

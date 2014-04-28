@@ -3,11 +3,23 @@ config = require './config'
 requireTree = require 'require-tree'
 controllers = requireTree './controllers'
 FileImporter = require 'jtfileimporter'
-crc32Config = require './crc32.json' if config.env != 'development'
+JTMerger = require 'jtmerger'
+if config.env != 'development'
+  crc32Config = require './crc32.json'
+  merger = new JTMerger require './merge.json'
+  components = require './components.json'
+
 # session = require './helpers/session'
 
 addImporter = (req, res, next) ->
-  fileImporter = new FileImporter()
+  fileImporter = new FileImporter merger
+
+  template = res.locals.template
+  if template && components
+    currentTemplateComponents = components[template]
+    fileImporter.importJs currentTemplateComponents?.js
+    fileImporter.importCss currentTemplateComponents?.css
+
   fileImporter.version crc32Config if crc32Config
   fileImporter.prefix config.staticUrlPrefix
   res.locals.fileImporter = fileImporter

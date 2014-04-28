@@ -34,6 +34,6 @@ refreshComponents = (template, files) ->
       else throw new Error "unexpect file:#{file}"
   components = allComponents[template]
   if !components || components.js.join('') != result.js.join('') || components.css.join('') != result.css.join('')
-    result.updatedAt = moment().format 'YYYY-MM-DD HH:mm:ss'
+    result.modifiedAt = moment().format 'YYYY-MM-DD HH:mm:ss'
     allComponents[template] = result
     fs.writeFileSync componentsFile, JSON.stringify allComponents, null, 2

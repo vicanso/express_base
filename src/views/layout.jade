@@ -13,7 +13,9 @@ html(lang='zh-CN')
     include ./inlinejs
     //CSS_FILES_CONTAINER
     - fileImporter.importCss('/components/normalize.css/normalize.css');
-    - fileImporter.importJs(['/components/jquery/dist/jquery.js', '/components/underscore/underscore.js', '/components/backbone/backbone.js', '/components/seajs/sea.js', '/javascripts/sea_config.js', '/javascripts/sea_dev.js'])
+    - fileImporter.importJs(['/components/jquery/dist/jquery.js', '/components/underscore/underscore.js', '/components/backbone/backbone.js', '/components/seajs/sea.js', '/javascripts/sea_config.js'])
+    if CONFIG.env == 'development'
+      - fileImporter.importJs('/javascripts/sea_dev.js');
   body
     block bodyContainer
   include ./global_variable

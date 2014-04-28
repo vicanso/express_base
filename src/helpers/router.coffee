@@ -137,7 +137,7 @@ appendJsAndCss = (html, fileImporter) ->
   isProductionMode = process.env.NODE_ENV == 'production'
   html = html.replace '<!--CSS_FILES_CONTAINER-->', fileImporter.exportCss isProductionMode
   html = html.replace '<!--JS_FILES_CONTAINER-->', fileImporter.exportJs isProductionMode
-  return
+  html
 
 ###*
    * resIsAvailable 判断response是否可用

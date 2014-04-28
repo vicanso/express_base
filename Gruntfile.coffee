@@ -118,6 +118,18 @@ module.exports = (grunt) ->
               file != normalizePath
           }
         ]
+    imageEmbed : 
+      build : 
+        files : [
+          {
+            expand : true
+            cwd : destPath
+            src : ['**/*.css']
+            dest : destPath
+            filter : (file) ->
+              file != normalizePath
+          }
+        ]
     # 计算静态文件的crc32
     crc32 : 
       strict :
@@ -149,4 +161,4 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-concat'
 
-  grunt.registerTask 'gen', ['clean:grunt', 'clean:dest', 'coffee', 'jshint', 'uglify', 'copy:build', 'stylus', 'cssmin', 'crc32', 'clean:build']
+  grunt.registerTask 'gen', ['clean:grunt', 'clean:dest', 'coffee', 'jshint', 'uglify', 'copy:build', 'stylus', 'cssmin', 'imageEmbed', 'crc32', 'clean:build']

@@ -11,7 +11,16 @@ initAppSetting = (app) ->
     staticUrlPrefix : config.staticUrlPrefix
   return
 
+initMongode = ->
+  uri = config.mongodbUri
+  if uri
+    mongodb = require './helpers/mongodb'
+    mongodb.init uri
+    mongodb.initModels path.join __dirname, './models'
+
+
 initServer = ->
+  initMongode()
   express = require 'express'
   app = express()
   initAppSetting app

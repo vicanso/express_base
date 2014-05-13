@@ -40,7 +40,7 @@ module.exports.init = (app, routeInfos) ->
       routeInfo.handler req, res, cbf, next
     middleware = routeInfo.middleware || []
     addLocals = (req, res, next) ->
-      res.locals.template = template if template
+      res.locals.TEMPLATE = template if template
       next()
     middleware.unshift addLocals
     routes = routeInfo.route

@@ -14,7 +14,7 @@ if config.env != 'development'
 addImporter = (req, res, next) ->
   fileImporter = new FileImporter merger
 
-  template = res.locals.template
+  template = res.locals.TEMPLATE
   if template && components
     currentTemplateComponents = components[template]
     fileImporter.importJs currentTemplateComponents?.js

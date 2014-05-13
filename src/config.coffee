@@ -28,4 +28,4 @@ exports.session =
   key : 'vicanso'
   ttl : 3600
 
-module.exports.mongodbUri = program.uri
+module.exports.mongodbUri = program.uri || 'mongodb://localhost:10020/test'

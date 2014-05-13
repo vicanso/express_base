@@ -24,9 +24,9 @@ module.exports.init = (uri, options = {}) ->
 
   client = mongoose.createConnection uri, options
   client.on 'connected', ->
-    logger.infi "mongdb #{uri} connected"
+    logger.info "#{uri} connected"
   client.on 'disconnected', ->
-    logger.infi "mongdb #{uri} disconnected"
+    logger.info "#{uri} disconnected"
 
 
 module.exports.initModels = (modelPath) ->

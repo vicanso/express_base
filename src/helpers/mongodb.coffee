@@ -29,6 +29,11 @@ module.exports.init = (uri, options = {}) ->
     logger.info "#{uri} disconnected"
 
 
+###*
+ * [initModels 初始化models]
+ * @param  {[type]} modelPath [description]
+ * @return {[type]}           [description]
+###
 module.exports.initModels = (modelPath) ->
   throw new Error 'the db is not init!' if !client
   models = requireTree modelPath
@@ -40,6 +45,11 @@ module.exports.initModels = (modelPath) ->
         schema.index.apply schema, indexOptions
     client.model name, schema
 
+###*
+ * [model 获取mongoose的model]
+ * @param  {[type]} name [description]
+ * @return {[type]}      [description]
+###
 module.exports.model = (name) ->
   throw new Error 'the db is not init!' if !client
   client.model name

@@ -3,7 +3,8 @@ do ->
   program.version('0.0.1')
   .option('-p, --port <n>', 'listen port', parseInt)
   .option('--log <n>', 'the log file')
-  .option('--uri <n>', 'mongodb uri')
+  .option('--mongodb <n>', 'mongodb uri')
+  .option('--redis <n>', 'redis uri')
   .parse process.argv
 
 
@@ -18,10 +19,15 @@ exports.env = process.env.NODE_ENV || 'development'
 exports.staticUrlPrefix = '/static'
 
 
-exports.redis =
-  port : '10010'
-  host : 'black'
-  password : 'redis pwd'
+exports.redis = do ->
+  url = require 'url'
+  redisUri = program.redis || 'redis://localhost:10010'
+  urlInfo = url.parse redisUri
+  {
+    port : urlInfo.port
+    host : urlInfo.hostname
+    password : urlInfo.auth
+  }
 
 exports.session = 
   secret : 'jenny&tree'

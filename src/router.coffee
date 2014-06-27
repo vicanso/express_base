@@ -13,7 +13,7 @@ if config.env != 'development'
 
 addImporter = (req, res, next) ->
   fileImporter = new FileImporter merger
-
+  fileImporter.debug true if res.locals.DEBUG
   template = res.locals.TEMPLATE
   if template && components
     currentTemplateComponents = components[template]

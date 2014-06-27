@@ -1,5 +1,6 @@
 path = require 'path'
 config = require './config'
+logger = require('./helpers/logger') __filename
 
 initAppSetting = (app) ->
   app.set 'view engine', 'jade'
@@ -11,25 +12,53 @@ initAppSetting = (app) ->
     staticUrlPrefix : config.staticUrlPrefix
   return
 
-initMongode = ->
+initMongod = ->
   uri = config.mongodbUri
   if uri
     mongodb = require './helpers/mongodb'
     mongodb.init uri
     mongodb.initModels path.join __dirname, './models'
 
+requestStatistics = ->
+  requestTotal = 0
+  tooManyReq = new Error 'too many request'
+  (req, res, next) ->
+    requestTotal++
+    stat =  ->
+      diff = process.hrtime startAt
+      ms = diff[0] * 1e3 + diff[1] * 1e-6
+      requestTotal--
+      data = 
+        responeseTime : ms.toFixed(3)
+        statusCode : res.statusCode
+        url : req.url
+        requestTotal : requestTotal
+        contentLength : GLOBAL.parseInt res._headers['content-length']
+      logger.info data
+    res.on 'finish', stat
+    res.on 'close', stat
+    next()
+
 
 initServer = ->
-  initMongode()
+  initMongod()
   express = require 'express'
   app = express()
   initAppSetting app
   app.use '/healthchecks', (req, res) ->
     res.send 'success'
 
+  timeout = require 'connect-timeout'
+
+  app.use requestStatistics()
+
+  app.use timeout 5000
+
+
   app.use require('morgan')() if config.env == 'production'
 
-  serveStatic = require 'serve-static'
+  expressStatic = 'static'
+  serveStatic = express[expressStatic]
   ###*
    * [staticHandler 静态文件处理]
    * @param  {[type]} mount      [description]
@@ -58,14 +87,15 @@ initServer = ->
 
   staticHandler '/static', path.join "#{__dirname}/statics"
 
-
-
-  app.use require('morgan')('tiny') if config.env == 'development'
+  app.use require('morgan') 'dev' if config.env == 'development'
 
 
   app.use require('method-override')()
   app.use require('body-parser')()
 
+  app.use (req, res, next) ->
+    res.locals.DEBUG = true if req.param('__debug')?
+    next()
 
   require('./router').init app
 

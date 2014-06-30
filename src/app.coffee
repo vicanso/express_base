@@ -23,6 +23,7 @@ requestStatistics = ->
   requestTotal = 0
   tooManyReq = new Error 'too many request'
   (req, res, next) ->
+    startAt = process.hrtime()
     requestTotal++
     stat =  ->
       diff = process.hrtime startAt
@@ -48,14 +49,15 @@ initServer = ->
   app.use '/healthchecks', (req, res) ->
     res.send 'success'
 
+  
+  if config.env == 'production'
+    app.use requestStatistics() 
+    app.use require('morgan')()
+
   timeout = require 'connect-timeout'
-
-  app.use requestStatistics()
-
   app.use timeout 5000
 
 
-  app.use require('morgan')() if config.env == 'production'
 
   expressStatic = 'static'
   serveStatic = express[expressStatic]
@@ -83,15 +85,19 @@ initServer = ->
       res.header 'Cache-Control', "public, max-age=#{staticMaxAge}, s-maxage=#{hour}"
       staticHandler req, res, (err) ->
         return next err if err
-        res.send 404
+        logger.error "#{req.url} is not found!"
+        res.send 404, ''
 
   staticHandler '/static', path.join "#{__dirname}/statics"
 
-  app.use require('morgan') 'dev' if config.env == 'development'
 
 
   app.use require('method-override')()
-  app.use require('body-parser')()
+  bodyParser = require 'body-parser'
+  app.use bodyParser.urlencoded {
+    extended : false
+  }
+  app.use bodyParser.json()
 
   app.use (req, res, next) ->
     res.locals.DEBUG = true if req.param('__debug')?

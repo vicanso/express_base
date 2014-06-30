@@ -3,8 +3,8 @@ do ->
   program.version('0.0.1')
   .option('-p, --port <n>', 'listen port', parseInt)
   .option('--log <n>', 'the log file')
-  .option('--mongodb <n>', 'mongodb uri')
-  .option('--redis <n>', 'redis uri')
+  .option('--mongodb <n>', 'mongodb uri eg.mongodb://localhost:10020/test, mongodb://user:pwd@localhost:10020/test')
+  .option('--redis <n>', 'redis uri eg.redis://localhost:10010, redis://pwd@localhost:10010')
   .parse process.argv
 
 
@@ -34,4 +34,4 @@ exports.session =
   key : 'vicanso'
   ttl : 3600
 
-module.exports.mongodbUri = program.uri || 'mongodb://localhost:10020/test'
+module.exports.mongodbUri = program.mongodb || 'mongodb://localhost:10020/test'

@@ -7,8 +7,13 @@ componentsFile = path.join __dirname, '../components.json'
 
 module.exports = (req, res, cbf) ->
   data = req.body
-  refreshComponents data.template, _.uniq _.flatten data.files
-  res.send ''
+  if !data?.template
+    res.json {
+      msg : 'template不能为空'
+    }
+  else
+    refreshComponents data.template, _.uniq _.flatten data.files
+    res.json {}
 
 ###*
  * [refreshComponents 更新components]

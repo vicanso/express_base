@@ -1,5 +1,6 @@
 path = require 'path'
 config = require './config'
+moment = require 'moment'
 logger = require('./helpers/logger') __filename
 
 initAppSetting = (app) ->
@@ -71,7 +72,10 @@ initServer = ->
     staticHandler = serveStatic staticPath
     
     hour = 3600
-    hour = 0 if !process.env.NODE_ENV
+    expires = moment().add(moment.duration 6, 'months').toString()
+    if !process.env.NODE_ENV
+      hour = 0
+      expires = ''
 
     staticMaxAge = 30 * 24 * hour
 
@@ -80,8 +84,8 @@ initServer = ->
       app.use mount, jtDev.ext.converter staticPath
       app.use mount, jtDev.stylus.parser staticPath
       app.use mount, jtDev.coffee.parser staticPath
-
     app.use mount, (req, res, next) ->
+      res.header 'Expires', expires if expires
       res.header 'Cache-Control', "public, max-age=#{staticMaxAge}, s-maxage=#{hour}"
       staticHandler req, res, (err) ->
         return next err if err

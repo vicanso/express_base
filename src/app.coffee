@@ -47,10 +47,16 @@ initServer = ->
   express = require 'express'
   app = express()
   initAppSetting app
+
+
   app.use '/healthchecks', (req, res) ->
     res.send 'success'
 
   
+  app.use (req, res, next) ->
+    res.header 'pid', "#{process.pid},#{process._jtPid}"
+    next()
+    
   if config.env == 'production'
     app.use requestStatistics() 
     app.use require('morgan')()
@@ -72,12 +78,13 @@ initServer = ->
     staticHandler = serveStatic staticPath
     
     hour = 3600
-    expires = moment().add(moment.duration 6, 'months').toString()
+    hourTotal = 30 * 24
+    expires = moment().add(moment.duration hourTotal, 'hour').toString()
     if !process.env.NODE_ENV
       hour = 0
       expires = ''
 
-    staticMaxAge = 30 * 24 * hour
+    staticMaxAge = hourTotal * hour
 
     if config.env == 'development'
       jtDev = require 'jtdev'
@@ -106,9 +113,14 @@ initServer = ->
   app.use (req, res, next) ->
     res.locals.DEBUG = true if req.param('__debug')?
     res.locals.JS_DEBUG = req.param('__jsdebug') || 0
+    pattern = req.param '__pattern'
+    pattern = '*' if config.env == 'development' && !pattern
+    res.locals.PATTERN = pattern
     next()
 
   require('./router').init app
+
+  app.use require './controllers/error'
 
   app.listen config.port
 

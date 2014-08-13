@@ -19,7 +19,8 @@
     "underscore": "1.6.0",
     "backbone": "1.1.2",
     "jquery": "2.1.1",
-    "jtlazy_load" : "0.0.8",
-    "seajs": "*"
+    "jtlazy_load": "0.0.8",
+    "seajs": "*",
+    "debug": "visionmedia/debug#~1.0.4"
   }
 }

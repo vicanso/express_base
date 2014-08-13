@@ -37,6 +37,10 @@ routeInfos = [
     middleware : [addImporter]
     template : 'home'
   }
+  {
+    route : '/user'
+    handler : controllers.user
+  }
 ]
 
 

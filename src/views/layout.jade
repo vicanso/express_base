@@ -13,7 +13,7 @@ html(lang='zh-CN')
     include ./inlinejs
     //CSS_FILES_CONTAINER
     - fileImporter.import('/components/normalize.css/normalize.css');
-    - fileImporter.import(['/components/jquery/dist/jquery.js', '/components/underscore/underscore.js', '/components/backbone/backbone.js']);
+    - fileImporter.import(['/components/jquery/dist/jquery.js', '/components/underscore/underscore.js', '/components/backbone/backbone.js', '/components/debug/dist/debug.js']);
     - fileImporter.import(['/components/seajs/sea.js', '/javascripts/sea_config.js'])
     if CONFIG.env == 'development'
       - fileImporter.import('/javascripts/sea_dev.js');

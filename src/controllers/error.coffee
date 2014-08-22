@@ -7,6 +7,8 @@ module.exports = (err, req, res, next) ->
     delete data.stack if config.env != 'development'
     res.json err.statusCode, data
   else
+    data = err.toJSON()
+    delete data.stack if config.env != 'development'
     res.render 'error', {
-      viewData : err.toJSON()
+      viewData : data
     }

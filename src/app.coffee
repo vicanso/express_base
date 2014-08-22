@@ -1,6 +1,7 @@
 path = require 'path'
 config = require './config'
 moment = require 'moment'
+_ = require 'underscore'
 logger = require('./helpers/logger') __filename
 
 initAppSetting = (app) ->
@@ -26,7 +27,7 @@ requestStatistics = ->
   (req, res, next) ->
     startAt = process.hrtime()
     requestTotal++
-    stat =  ->
+    stat = _.once ->
       diff = process.hrtime startAt
       ms = diff[0] * 1e3 + diff[1] * 1e-6
       requestTotal--
@@ -37,6 +38,7 @@ requestStatistics = ->
         requestTotal : requestTotal
         contentLength : GLOBAL.parseInt res._headers['content-length']
       logger.info data
+
     res.on 'finish', stat
     res.on 'close', stat
     next()
@@ -52,12 +54,13 @@ initServer = ->
   app.use '/healthchecks', (req, res) ->
     res.send 'success'
 
-  
-  app.use (req, res, next) ->
-    res.header 'pid', "#{process.pid},#{process._jtPid}"
-    next()
     
   if config.env == 'production'
+    hostName = require('os').hostname()
+    app.use (req, res, next) ->
+      res.header 'JT-Info', "#{hostName},#{process.pid},#{process._jtPid}"
+      next()
+    
     app.use requestStatistics() 
     app.use require('morgan')()
 
@@ -75,7 +78,7 @@ initServer = ->
    * @return {[type]}            [description]
   ###
   staticHandler = (mount, staticPath) ->
-    staticHandler = serveStatic staticPath
+    handler = serveStatic staticPath
     
     hour = 3600
     hourTotal = 30 * 24
@@ -94,7 +97,7 @@ initServer = ->
     app.use mount, (req, res, next) ->
       res.header 'Expires', expires if expires
       res.header 'Cache-Control', "public, max-age=#{staticMaxAge}, s-maxage=#{hour}"
-      staticHandler req, res, (err) ->
+      handler req, res, (err) ->
         return next err if err
         logger.error "#{req.url} is not found!"
         res.send 404, ''

@@ -55,14 +55,14 @@ initServer = ->
     res.send 'success'
 
     
-  if config.env == 'production'
+  if config.env != 'development'
     hostName = require('os').hostname()
     app.use (req, res, next) ->
       res.header 'JT-Info', "#{hostName},#{process.pid},#{process._jtPid}"
       next()
     
     app.use requestStatistics() 
-    app.use require('morgan')()
+    app.use require('morgan') 'tiny'
 
   timeout = require 'connect-timeout'
   app.use timeout 5000
@@ -100,7 +100,7 @@ initServer = ->
       handler req, res, (err) ->
         return next err if err
         logger.error "#{req.url} is not found!"
-        res.send 404, ''
+        res.status(404).send ''
 
   staticHandler '/static', path.join "#{__dirname}/statics"
 

@@ -32,6 +32,6 @@ exports.redis = do ->
 exports.session = 
   secret : 'jenny&tree'
   key : 'vicanso'
-  ttl : 3600
+  ttl : 3600 * 6
 
 module.exports.mongodbUri = program.mongodb || 'mongodb://localhost:10020/test'

@@ -1,16 +1,9 @@
-seajs.use ['jquery', 'underscore', 'Backbone', 'jtLazyLoad', 'debug'], ($, _, Backbone, JTLazyLoad, debug) ->
-  debug = debug 'home'
-  debug 'debug test'
-  debug 'json:%j', {
-    test : 'a'
-  }
+HomePageCtrl = ($scope, $http, debug, $log, utils, user, Book) ->
+  debug = debug 'jt.homePage'
+  debug Book
+  debug 'start'
 
-  $.ajax({
-    url : '/user'
-    dataType : 'json'  
-  }).success((res)->
-  ).error (res) ->
-    console.dir res
+HomePageCtrl.$inject = ['$scope', '$http', 'debug', '$log', 'utils', 'user', 'Book']
+window.HomePageCtrl = HomePageCtrl
 
-  if CONFIG.env == 'development'
-    seajs.emit 'loadComplete'
+window.JT_APP.addRequires ['jt.book']

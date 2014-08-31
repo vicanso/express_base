@@ -10,33 +10,20 @@ module.exports.init = (app, routeInfos) ->
     template = routeInfo.template
     handle = (req, res, next) ->
       next = _.once next
-      cbf = (err, renderData, statusCode = 200, headerOptions = {}) ->
+      cbf = (err, data) ->
         if err
           next err
           return
-        if _.isNumber renderData
-          tmp = statusCode
-          statusCode = renderData
-          renderData = tmp
-        if _.isObject statusCode
-          tmp = statusCode
-          statusCode = headerOptions
-          headerOptions = tmp
-        if !_.isNumber statusCode
-          statusCode = 200
-        if renderData
-          res.status statusCode
-          if statusCode > 299 && statusCode < 400
-            res.redirect statusCode, renderData
-          else if template
-            renderResponse req, res, template, renderData, headerOptions, next
+        if data
+          if template
+            renderResponse req, res, template, data, next
           else
-            if _.isObject renderData
-              jsonResponse req, res, renderData, headerOptions, next
+            if _.isObject data
+              jsonResponse req, res, data, next
             else
-              response req, res, renderData, headerOptions, next
+              response req, res, data, next
         else
-          res.send statusCode
+          res.send ''
       routeInfo.handler req, res, cbf, next
     middleware = routeInfo.middleware || []
     addLocals = (req, res, next) ->
@@ -60,11 +47,10 @@ module.exports.init = (app, routeInfos) ->
  * @param  {[type]}   res           [description]
  * @param  {[type]}   template      [description]
  * @param  {[type]}   data          [description]
- * @param  {[type]}   headerOptions [description]
  * @param  {Function} next          [description]
  * @return {[type]}                 [description]
 ###
-renderResponse = module.exports.render = (req, res, template, data, headerOptions, next) ->
+renderResponse = module.exports.render = (req, res, template, data, next) ->
   fileImporter = data.fileImporter || res.locals?.fileImporter
   res.render template, data, (err, html) =>
     if err
@@ -72,28 +58,18 @@ renderResponse = module.exports.render = (req, res, template, data, headerOption
       return 
     if fileImporter
       html = appendJsAndCss html, fileImporter
-    _.defaults headerOptions, {
-      'Content-Type' :'text/html'
-    }
-    response req, res, html, headerOptions, next
+    res.header 'Content-Type', 'text/html'
+    response req, res, html, next
 
 ###*
  * response 响应请求
  * @param  {request} req request
  * @param  {response} res response
  * @param  {Object, String, Buffer} data 响应的数据
- * @param  {Object} headerOptions 响应的头部
  * @return {[type]}               [description]
 ###
-response = (req, res, data, headerOptions, next) ->
+response = (req, res, data, next) ->
   if resIsAvailable res
-    _.defaults headerOptions, {
-      'Content-Type' :'text/plain'
-    }
-
-    if headerOptions
-      _.each headerOptions, (value, key) ->
-        res.header key ,value
     res.send data
   else
     err = new Error 'the header has been sent!'
@@ -104,18 +80,12 @@ response = (req, res, data, headerOptions, next) ->
  * @param  {[type]}   req           [description]
  * @param  {[type]}   res           [description]
  * @param  {[type]}   data          [description]
- * @param  {[type]}   headerOptions [description]
  * @param  {Function} next          [description]
  * @return {[type]}                 [description]
 ###
-jsonResponse = (req, res, data, headerOptions, next) ->
+jsonResponse = (req, res, data, next) ->
   if resIsAvailable res
-    _.defaults headerOptions, {
-      'Content-Type' :'application/json'
-    }
-    if headerOptions
-      _.each headerOptions, (value, key) ->
-        res.header key ,value
+    res.header 'Content-Type', 'application/json'
     keys = req.query?._key
     if keys
       keys = keys.split ','
@@ -124,7 +94,7 @@ jsonResponse = (req, res, data, headerOptions, next) ->
           _.pick item, keys
       else
         data = _.pick data, keys
-    res.json 200, data
+    res.json data
   else
     err = new Error 'the header has been sent!'
     err.msg = '该请求已发送' 

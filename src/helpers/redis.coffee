@@ -4,14 +4,15 @@ redis = require 'redis'
 client = redis.createClient redisConfig.port, redisConfig.host, {
   auth_pass : redisConfig.password
 }
+logger = require('./logger') __filename
 
 client.on 'ready', ->
-  console.dir 'ready'
+  logger.info 'ready'
 
 client.on 'connect', ->
-  console.dir 'connect'
+  logger.info 'connect'
 
-client.on 'error', ->
-  console.dir 'error'
+client.on 'error', (err) ->
+  logger.error "error: #{err.message}"
 
 module.exports = client

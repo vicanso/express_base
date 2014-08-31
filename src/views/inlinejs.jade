@@ -1,11 +1,10 @@
 script.
   (function(window){
     window.CONFIG = {
-      debug : #{DEBUG || 'false'},
-      jsDebug : #{JS_DEBUG || 0},
-      env : '#{CONFIG.env}',
+      debug : #{DEBUG || 0},
+      env : '#{ENV}',
       pattern : '#{PATTERN || ""}',
-      staticUrlPrefix : '#{CONFIG.staticUrlPrefix}',
+      staticUrlPrefix : '#{STATIC_URL_PREFIX}',
       template : '#{TEMPLATE}'
     };
     window.TIME_LINE = {

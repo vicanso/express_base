@@ -1,15 +1,15 @@
 {
   "except" : [
-    "/components/jquery/dist/jquery.js"
+    "/components/angularjs/angular.js",
+    "/components/debug/dist/debug.js"
   ],
   "files" : [
     [
-      "/components/underscore/underscore.js",
-      "/components/backbone/backbone.js"
-    ],
-    [
-      "/components/seajs/sea.js",
-      "/javascripts/sea_config.js"
+      "/components/angular-local-storage/angular-local-storage.js",
+      "/services/utils.js",
+      "/services/user.js",
+      "/services/debug.js",
+      "/javascripts/global.js"
     ]
   ]
 }

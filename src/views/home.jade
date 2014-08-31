@@ -1,8 +1,12 @@
 extends ./layout
 block bodyContainer
-  p 测试页
+  .homePage(ng-controller='HomePageCtrl')
+    p 测试页
   //- p #{viewData.a.c}
   //- .icon1
   //- .icon2
+  
+  - fileImporter.import('/javascripts/book.js');
+  
   - fileImporter.import('/javascripts/home.js');
   - fileImporter.import('/stylesheets/home.css');

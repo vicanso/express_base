@@ -1,19 +1,20 @@
 {
   "home": {
     "js": [
-      "/components/jquery/dist/jquery.js",
-      "/components/underscore/underscore.js",
-      "/components/backbone/backbone.js",
+      "/components/angularjs/angular.js",
+      "/components/angular-local-storage/angular-local-storage.js",
+      "/services/utils.js",
+      "/services/user.js",
       "/components/debug/dist/debug.js",
-      "/components/seajs/sea.js",
-      "/javascripts/sea_config.js",
-      "/components/jtlazy_load/dest/jtlazy_load.js",
+      "/services/debug.js",
+      "/javascripts/global.js",
+      "/javascripts/book.js",
       "/javascripts/home.js"
     ],
     "css": [
       "/components/normalize.css/normalize.css",
       "/stylesheets/home.css"
     ],
-    "modifiedAt": "2014-07-28 17:45:34"
+    "modifiedAt": "2014-08-30 15:07:29"
   }
 }

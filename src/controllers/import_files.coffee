@@ -6,14 +6,15 @@ moment = require 'moment'
 componentsFile = path.join __dirname, '../components.json'
 
 module.exports = (req, res, cbf) ->
+  res.header 'Cache-Control', 'no-cache, no-store'
   data = req.body
   if !data?.template
-    res.json {
+    cbf null, {
       msg : 'template不能为空'
     }
   else
     refreshComponents data.template, _.uniq _.flatten data.files
-    res.json {}
+    cbf null, {}
 
 ###*
  * [refreshComponents 更新components]
@@ -22,7 +23,8 @@ module.exports = (req, res, cbf) ->
  * @return {[type]}          [description]
 ###
 refreshComponents = (template, files) ->
-  allComponents = JSON.parse fs.readFileSync componentsFile
+  json = fs.readFileSync(componentsFile).toString() || '{}'
+  allComponents = JSON.parse json 
   result = 
     js : []
     css : []

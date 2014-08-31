@@ -16,11 +16,8 @@
   ],
   "dependencies": {
     "normalize.css": "3.0.1",
-    "underscore": "1.6.0",
-    "backbone": "1.1.2",
-    "jquery": "2.1.1",
-    "jtlazy_load": "0.0.8",
-    "seajs": "*",
-    "debug": "visionmedia/debug#~1.0.4"
+    "debug": "visionmedia/debug#~1.0.4",
+    "angularjs": "1.2.23",
+    "angular-local-storage": "~0.0.7"
   }
 }

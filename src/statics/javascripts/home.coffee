@@ -1,9 +1,14 @@
-HomePageCtrl = ($scope, $http, debug, $log, utils, user, Book) ->
-  debug = debug 'jt.homePage'
-  debug Book
-  debug 'start'
+fn = ($scope, $http, jtDebug, $log, utils, user, Book) ->
+  $scope.user = {}
+  jtDebug = jtDebug 'jt.homePage'
+  jtDebug Book
+  jtDebug 'start'
+  user.getInfo (err, data) ->
+    console.dir data
 
-HomePageCtrl.$inject = ['$scope', '$http', 'debug', '$log', 'utils', 'user', 'Book']
-window.HomePageCtrl = HomePageCtrl
+fn.$inject = ['$scope', '$http', 'jtDebug', '$log', 'utils', 'user', 'Book']
+JT_APP.addRequires ['jt.book']
+JT_APP.controller 'HomePageController', fn
 
-window.JT_APP.addRequires ['jt.book']
+
+

@@ -12,6 +12,7 @@ normalizePath = 'dest/statics/components/normalize.css'
 
 
 
+
 module.exports = (grunt) ->
   noneCopyFileExts = ['.coffee', '.js', '.styl']
   grunt.initConfig {
@@ -57,12 +58,18 @@ module.exports = (grunt) ->
             cwd : buildPath
             src : '**/*.js'
             dest : staticsDestPath
+            filter : (file) ->
+              stat = fs.lstatSync file
+              !stat.isDirectory()
           }
           {
             expand : true
             cwd : staticsSrcPath
             src : '**/*.js'
             dest : staticsDestPath
+            filter : (file) ->
+              stat = fs.lstatSync file
+              !stat.isDirectory()
           }
         ]
     stylus :
@@ -118,7 +125,8 @@ module.exports = (grunt) ->
             src : ['**/*.css']
             dest : destPath
             filter : (file) ->
-              file != normalizePath
+              stat = fs.lstatSync file
+              !stat.isDirectory()
           }
         ]
     imageEmbed : 
@@ -130,7 +138,8 @@ module.exports = (grunt) ->
             src : ['**/*.css']
             dest : destPath
             filter : (file) ->
-              file != normalizePath
+              stat = fs.lstatSync file
+              !stat.isDirectory()
           }
         ]
     # 计算静态文件的crc32
@@ -169,8 +178,10 @@ module.exports = (grunt) ->
   grunt.registerMultiTask 'crc32', ->
     crc32Infos = {}
     @files.forEach (file) ->
-      if file.src[0] != normalizePath
-        buf = fs.readFileSync file.src[0]
+      src = file.src[0]
+      stat = fs.lstatSync src
+      if !stat.isDirectory()
+        buf = fs.readFileSync src
         destFile = '/' + file.dest
         crc32Infos[destFile] = crc32.unsigned buf
     fs.writeFileSync path.join(destPath, 'crc32.json'), JSON.stringify( crc32Infos, null, 2)
@@ -185,5 +196,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-concat'
 
-  grunt.registerTask 'gen', ['clean:grunt', 'clean:dest', 'coffee', 'jshint', 'uglify', 'copy:build', 'stylus', 'cssmin', 'crc32', 'seaConfig', 'merge_static', 'imageEmbed', 'crc32', 'copy:js', 'clean:build']
+  grunt.registerTask 'gen', ['clean:grunt', 'clean:dest', 'coffee', 'jshint', 'uglify', 'copy:build', 'stylus', 'cssmin', 'crc32', 'merge_static', 'imageEmbed', 'crc32', 'copy:js', 'clean:build']
   grunt.registerTask 'default', ['gen']

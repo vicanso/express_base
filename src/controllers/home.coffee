@@ -1,13 +1,14 @@
 mongodb = require '../helpers/mongodb'
 config = require '../config'
-module.exports = (req, res, cbf) ->
-  res.header 'Cache-Control', 'public, max-age=600'
-  Test = mongodb.model 'Test'
 
-  new Test({
+
+
+module.exports = (req, res, cbf) ->
+  Test = mongodb.model 'Test'
+  obj =
     id : '123'
     name : 'vicanso'
-  }).save ->
+    books : 'abc'.split ''
   cbf null, {
     viewData :
       globalVariable : 

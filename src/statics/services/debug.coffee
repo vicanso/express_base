@@ -1,7 +1,11 @@
+###*
+ * debug模块，用于开发时的log输出
+###
+
 module = angular.module 'jt.debug', []
 noop = ->
 
-module.factory 'debug', ['$http', '$rootScope', ($http, $rootScope) ->
+module.factory 'jtDebug', ['$http', '$rootScope', ($http, $rootScope) ->
   debug = window.debug
   if debug
     pattern = window.CONFIG?.pattern

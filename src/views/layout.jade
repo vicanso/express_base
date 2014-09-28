@@ -12,10 +12,14 @@ html(lang='zh-CN', ng-app='jtApp')
     title #{title}
     include ./inlinejs
     //CSS_FILES_CONTAINER
-    - fileImporter.import('/components/normalize.css/normalize.css');
-    - fileImporter.import(['/components/angularjs/angular.js', '/components/angular-local-storage/angular-local-storage.js']);
+    - fileImporter.import(['/components/normalize.css/normalize.css', '//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css']);
+    - fileImporter.import(['/components/angularjs/angular.js', '/components/script.js/dist/script.js', '/components/angular-local-storage/angular-local-storage.js']);
 
-    - fileImporter.import(['/services/utils.js', '/services/user.js']);
+    - fileImporter.import('/services/utils.js');
+    - fileImporter.import('/services/http_log.js');
+    - fileImporter.import('/services/user.js');
+
+    - fileImporter.import('/directives/common.js');
 
     if PATTERN
       - fileImporter.import('/components/debug/dist/debug.js');

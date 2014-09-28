@@ -18,6 +18,7 @@
     "normalize.css": "3.0.1",
     "debug": "visionmedia/debug#~1.0.4",
     "angularjs": "1.2.23",
-    "angular-local-storage": "~0.0.7"
+    "angular-local-storage": "~0.0.7",
+    "script.js": "~2.5.7"
   }
 }

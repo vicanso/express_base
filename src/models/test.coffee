@@ -3,6 +3,8 @@ module.exports =
     id : Number
     name : String
     address : String
+    books : 
+      type : Array
   indexes : [
     {
       id : 1

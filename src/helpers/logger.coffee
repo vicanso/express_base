@@ -1,30 +1,47 @@
 config = require '../config'
 path = require 'path'
+_ = require 'underscore'
 moment = require 'moment'
 colors = require 'colors' if config.env == 'development'
 
 class Logger
   constructor : (@tag) ->
   log : (msg) ->
-    @_log 'log', msg
+    args = _.toArray arguments
+    args.unshift 'log'
+    @_log.apply @, args
   info : (msg) ->
-    @_log 'info', msg
+    args = _.toArray arguments
+    args.unshift 'log'
+    @_log.apply @, args
 
   debug : (msg) ->
-    @_log 'debug', msg
+    args = _.toArray arguments
+    args.unshift 'debug'
+    @_log.apply @, args
 
   error : (msg) ->
-    @_log 'error', msg
+    args = _.toArray arguments
+    args.unshift 'error'
+    @_log.apply @, args
 
   warn : (msg) ->
-    @_log 'warn', msg
+    args = _.toArray arguments
+    args.unshift 'warn'
+    @_log.apply @, args
 
   write : (msg) ->
 
   _log : (type, msg) ->
 
     if config.env == 'development'
-      str = "[#{type}]".green
+      switch type
+        when 'error'
+          str = "[#{type}]".red
+        when 'warn'
+          str = "[#{type}]".yellow
+        else
+          str = "[#{type}]".green
       str += " #{moment().format('HH:mm:ss')}".grey
       str += " #{JSON.stringify(msg)}"
       str += " [#{@tag}]".cyan if @tag

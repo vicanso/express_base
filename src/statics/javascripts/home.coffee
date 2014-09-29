@@ -4,6 +4,7 @@ fn = ($scope, $http, jtDebug, $log, utils, user, Book) ->
   jtDebug Book
   jtDebug 'start'
   user.getInfo (err, data) ->
+    console.error err
     console.dir data
 
 fn.$inject = ['$scope', '$http', 'jtDebug', '$log', 'utils', 'user', 'Book']

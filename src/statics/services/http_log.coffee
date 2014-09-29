@@ -6,7 +6,7 @@ module = angular.module 'jt.httpLog', ['LocalStorageModule']
 
 now = Date.now || ->
   new Date().getTime()
-module.factory 'jtHttpLog', ['$injector', 'localStorageService', ($injector, localStorageService) ->
+module.factory 'jtHttpLog', ['$q', '$injector', 'localStorageService', ($q, $injector, localStorageService) ->
   # 本地存储http log，定时将所有的log往服务器发送
   httpLogStorage = localStorageService.get('httpLog') || {
     success : []
@@ -40,6 +40,10 @@ module.factory 'jtHttpLog', ['$injector', 'localStorageService', ($injector, loc
     response : (res) ->
       config = res.config
       url = config.url
+      deprecate = res.headers 'JT-Deprecate'
+      if CONFIG.env == 'development' && deprecate
+        alert "url: #{url}, desc:#{deprecate}" 
+
       if url != '/httplog'
         useTime = now() - config._createdAt
         httpLogStorage.success.push {
@@ -48,14 +52,19 @@ module.factory 'jtHttpLog', ['$injector', 'localStorageService', ($injector, loc
         }
         localStorageService.set 'httpLog', httpLogStorage
       res
-    requestError : (req) ->
-      # console.dir req.config.url
-    responseError : (res) ->
+    requestError : (rejection) ->
+      $q.reject rejection
+
+    responseError : (rejection) ->
+      deprecate = rejection.headers 'JT-Deprecate'
+      url = rejection.config.url
+      if CONFIG.env == 'development' && deprecate
+        alert "url: #{url}, desc:#{deprecate}" 
       httpLogStorage.error.push {
-        url : res.config.url
-        status : res.status
+        url : url
+        status : rejection.status
       }
       localStorageService.set 'httpLog', httpLogStorage
-      res
+      $q.reject rejection
   httpLog
 ]

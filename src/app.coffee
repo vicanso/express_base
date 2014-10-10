@@ -2,6 +2,8 @@ path = require 'path'
 config = require './config'
 moment = require 'moment'
 express = require 'express'
+crypto = require 'crypto'
+fs = require 'fs'
 _ = require 'underscore'
 JTStats = require './helpers/stats'
 logger = require('./helpers/logger') __filename
@@ -79,7 +81,11 @@ initMonitor = ->
 
   lagTotal = 0
   lagCount = 0
-  toobusy = require 'toobusy'
+  try
+    toobusy = require 'toobusy'
+    
+  catch error
+    toobusy = null
   lagLog = ->
     lagTotal += toobusy.lag()
     lagCount++
@@ -90,7 +96,7 @@ initMonitor = ->
       JTStats.average "lag.#{process._jtPid || 0}", lag
     setTimeout lagLog, 1000
 
-  lagLog()
+  lagLog() if toobusy
   memoryLog()
 
 debugParamsHandler = ->
@@ -107,7 +113,7 @@ debugParamsHandler = ->
  * @return {[type]}     [description]
 ###
 adminHandler = (app) ->
-  crypto = require 'crypto'
+  
   app.get '/jt/restart', (req, res) ->
     key = req.query?.key
     if key
@@ -120,6 +126,12 @@ adminHandler = (app) ->
     else
       res.status(500).json {msg : 'fail, the key is null'}
 
+  appVersion = 'no version'
+  fs.readFile path.join(__dirname, 'version'), (err, buf) ->
+    appVersion = buf.toString() if buf
+    return
+  app.get '/jt/version', (req, res) ->
+    res.send appVersion
 
 staticHandler = do ->
   expressStatic = 'static'

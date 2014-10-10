@@ -9,7 +9,12 @@ if config.env != 'development'
   merger = new JTMerger require './merge.json'
 
 
-
+###*
+ * [addImporter description]
+ * @param {[type]}   req  [description]
+ * @param {[type]}   res  [description]
+ * @param {Function} next [description]
+###
 addImporter = (req, res, next) ->
   fileImporter = new FileImporter merger
   fileImporter.debug true if res.locals.DEBUG

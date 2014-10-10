@@ -9,7 +9,7 @@ app.addRequires = (arr) ->
   angular.forEach arr, (item) ->
     requires.push item if !~requires.indexOf item
     return
-  return
+  @
 
 app.config(['localStorageServiceProvider', (localStorageServiceProvider) ->
   # localstorage的前缀
@@ -29,7 +29,7 @@ app.config(['localStorageServiceProvider', (localStorageServiceProvider) ->
   $provide.decorator '$exceptionHandler', params
 ])
 
-app.run ['$http', ($http) ->
+app.run ['$http', '$timeout', ($http, $timeout) ->
   timeline = window.TIME_LINE
   if timeline
     # 往服务器post timeline的时间统计
@@ -40,6 +40,31 @@ app.run ['$http', ($http) ->
       template : CONFIG.template
       files : window.IMPORT_FILES
     }
+
+
+  checkInterval = 5 * 1000
+  checkWatchers = ->
+    watchers = []
+
+    fn = (element) ->
+      if element.data().hasOwnProperty '$scope'
+        angular.forEach element.data().$scope.$$watchers, (watcher) ->
+          watchers.push watcher
+      angular.forEach element.children(), (child) ->
+        fn angular.element child
+
+    fn angular.element document.getElementsByTagName('body')
+    
+
+    console.dir "watcher total:#{watchers.length}"
+    $timeout ->
+      checkWatchers()
+    , checkInterval
+    return
+
+  $timeout ->
+    checkWatchers()
+  , checkInterval if CONFIG.env == 'development'
+
   return
 ]
-window.JT_APP = app

@@ -8,8 +8,9 @@ fn = ($scope, $http, jtDebug, $log, utils, user, Book) ->
     console.dir data
 
 fn.$inject = ['$scope', '$http', 'jtDebug', '$log', 'utils', 'user', 'Book']
-JT_APP.addRequires ['jt.book']
-JT_APP.controller 'HomePageController', fn
+angular.module('jtApp')
+  .addRequires(['jt.book'])
+  .controller 'HomePageController', fn
 
 
 

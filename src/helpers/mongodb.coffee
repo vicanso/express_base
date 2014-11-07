@@ -38,7 +38,10 @@ module.exports.initModels = (modelPath) ->
   throw new Error 'the db is not init!' if !client
   models = requireTree modelPath
   _.each models, (model, name) ->
-    name = name.charAt(0).toUpperCase() + name.substring 1
+    if model.name
+      name = model.name
+    else
+      name = name.charAt(0).toUpperCase() + name.substring 1
     schema = new Schema model.schema, model.options
     if model.indexes
       _.each model.indexes, (indexOptions) ->

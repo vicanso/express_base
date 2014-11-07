@@ -11,10 +11,14 @@ module.directive 'jtFocus', [ ->
         element.addClass focusClass
         scope.$apply ->
           ctrl.$focused = true
+          return
+        return
       element.bind 'blur', (e) ->
         element.removeClass focusClass
         scope.$apply ->
           ctrl.$focused = false
+          return
+        return
   }
 
 ]

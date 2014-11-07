@@ -2,7 +2,7 @@
  * $http相关的数据记录（请求使用时间，出错等）
 ###
 
-module = angular.module 'jt.httpLog', ['LocalStorageModule']
+module = angular.module 'jt.service.httpLog', ['LocalStorageModule']
 
 now = Date.now || ->
   new Date().getTime()
@@ -32,6 +32,12 @@ module.factory 'jtHttpLog', ['$q', '$injector', 'localStorageService', ($q, $inj
   setInterval ->
     postHttpLog()
   , 120 * 1000
+  setTimeout ->
+    total = httpLogStorage.success.length + httpLogStorage.error.length
+    postHttpLog() if total > 20
+    return
+  , 1
+
 
   httpLog =
     request : (config) ->
@@ -57,12 +63,14 @@ module.factory 'jtHttpLog', ['$q', '$injector', 'localStorageService', ($q, $inj
 
     responseError : (rejection) ->
       deprecate = rejection.headers 'JT-Deprecate'
-      url = rejection.config.url
+      config = rejection.config
+      url = config.url
       if CONFIG.env == 'development' && deprecate
         alert "url: #{url}, desc:#{deprecate}" 
       httpLogStorage.error.push {
         url : url
         status : rejection.status
+        use : now() - config._createdAt
       }
       localStorageService.set 'httpLog', httpLogStorage
       $q.reject rejection

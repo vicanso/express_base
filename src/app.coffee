@@ -7,7 +7,7 @@ fs = require 'fs'
 _ = require 'underscore'
 JTStats = require './helpers/stats'
 logger = require('./helpers/logger') __filename
-
+fileHash = require './helpers/hash'
 ###*
  * [initAppSetting 初始化app的配置]
  * @param  {[type]} app [description]
@@ -20,6 +20,17 @@ initAppSetting = (app) ->
 
   app.locals.ENV = config.env
   app.locals.STATIC_URL_PREFIX = config.staticUrlPrefix
+
+  
+  app.locals.convertImgSrc = (src) ->
+    newSrc = config.staticUrlPrefix + src
+    if config.env == 'development'
+      newSrc
+    else
+      file = path.join config.staticPath, src
+      key = fileHash.createSync file
+      "#{newSrc}?v=#{key}"
+
   return
 
 ###*
@@ -120,7 +131,9 @@ adminHandler = (app) ->
       shasum = crypto.createHash 'sha1'
       if '6a3f4389a53c889b623e67f385f28ab8e84e5029' == shasum.update(key).digest 'hex'
         res.status(200).json {msg : 'success'}
-        jtCluster?.restartAll()
+        setTimeout ->
+          process.exit();
+        , 1000
       else
         res.status(500).json {msg : 'fail, the key is wrong'}
     else
@@ -131,7 +144,11 @@ adminHandler = (app) ->
     appVersion = buf.toString() if buf
     return
   app.get '/jt/version', (req, res) ->
-    res.send appVersion
+    codeVersion = fs.readFileSync path.join(__dirname, 'version')
+    res.send {
+      running : appVersion
+      code : codeVersion?.toString()
+    }
 
 staticHandler = do ->
   expressStatic = 'static'
@@ -158,7 +175,7 @@ staticHandler = do ->
     if config.env == 'development'
       jtDev = require 'jtdev'
       app.use mount, jtDev.ext.converter staticPath
-      app.use mount, jtDev.stylus.parser staticPath
+      app.use mount, jtDev.stylus.parser staticPath, {linenos : true}
       app.use mount, jtDev.coffee.parser staticPath
     app.use mount, (req, res, next) ->
       res.header 'Expires', expires if expires
@@ -175,7 +192,7 @@ initServer = ->
   app = express()
   initAppSetting app
 
-  app.use '/healthchecks', (req, res) ->
+  app.use '/ping', (req, res) ->
     res.send 'success'
 
     
@@ -197,7 +214,7 @@ initServer = ->
   app.use timeout 5000
 
 
-  staticHandler app, '/static', path.join "#{__dirname}/statics"
+  staticHandler app, config.staticUrlPrefix, config.staticPath
 
   
 
@@ -220,15 +237,13 @@ initServer = ->
 
   logger.info "server listen on: #{config.port}"
 
+
 if config.env == 'development'
   initServer()
 else
-  JTCluster = require 'jtcluster'
-  options = 
-    slaveTotal : 2
-    slaveHandler : initServer
-  jtCluster = new JTCluster options
-  jtCluster.on 'log', (msg) ->
-    logger.info msg
-
+  d = require('domain').create()
+  d.on 'error', (err) ->
+    logger.error err.stack
+    logger.error err.message
+  d.run initServer
 

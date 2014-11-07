@@ -22,6 +22,9 @@ exports.app = 'express_base'
 exports.staticUrlPrefix = '/static'
 
 
+exports.staticPath = __dirname + '/statics'
+
+
 exports.staticHosts = if exports.env == 'development' then null else ['s1.vicanso.com', 's2.vicanso.com']
 
 

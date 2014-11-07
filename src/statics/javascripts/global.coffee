@@ -1,6 +1,6 @@
 
 
-app = angular.module 'jtApp', ['LocalStorageModule', 'jt.debug', 'jt.utils', 'jt.httpLog', 'jt.user', 'jt.directive.common']
+app = angular.module 'jtApp', ['LocalStorageModule', 'jt.service.debug', 'jt.service.utils', 'jt.service.httpLog', 'jt.service.user', 'jt.directive.common']
 alert 'addRequires is defined' if app.addRequires
 
 app.addRequires = (arr) ->
@@ -29,11 +29,18 @@ app.config(['localStorageServiceProvider', (localStorageServiceProvider) ->
   $provide.decorator '$exceptionHandler', params
 ])
 
-app.run ['$http', '$timeout', ($http, $timeout) ->
+app.run ['$http', '$timeout', '$window', ($http, $timeout, $window) ->
+
+  # 统计数据
   timeline = window.TIME_LINE
-  if timeline
-    # 往服务器post timeline的时间统计
-    $http.post '/timeline', timeline.getLogs()
+  timeline.timeEnd('js');
+  statisticsData = 
+    timeline :timeline.getLogs()
+    view :
+      width : window.screen.width
+      height : window.screen.height
+  $http.post '/statistics', statisticsData
+
   if window.IMPORT_FILES?.length
     # 向服务器提交当前template所使用到的静态文件（方便服务器预先做文件打包等操作）
     $http.post '/import/files', {
@@ -42,7 +49,7 @@ app.run ['$http', '$timeout', ($http, $timeout) ->
     }
 
 
-  checkInterval = 5 * 1000
+  checkInterval = 10 * 1000
   checkWatchers = ->
     watchers = []
 

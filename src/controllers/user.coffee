@@ -9,7 +9,7 @@ module.exports = (req, res, cbf) ->
   if req.query?.__api?
     res.send apiDesc
     return
-  res.header 'JT-Deprecate', 'deprecate xxxx, please use xxxx'
+  # res.header 'JT-Deprecate', 'deprecate xxxx, please use xxxx'
   cbf new JTError 100
   # cbf null, {
   #   name : 'vicanso'

@@ -10,7 +10,7 @@ module.exports = (req, res, cbf) ->
     logger.info "#{httpLog} url:#{tmp.url} use:#{tmp.use}"
     return
   _.each data?.error, (tmp) ->
-    logger.error "#{httpLog} url:#{tmp.url} use:#{tmp.use}"
+    logger.error "#{httpLog} url:#{tmp.url} use:#{tmp.use} status:#{tmp.status}"
     return
   cbf null, {
     msg : 'success'

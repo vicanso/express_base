@@ -64,10 +64,10 @@ routeInfos = [
     handler : controllers.import_files
   }
   {
-    route : '/timeline'
+    route : '/statistics'
     type : 'post'
     middleware : [setNoCache]
-    handler : controllers.timeline
+    handler : controllers.statistics
   }
   {
     route : '/httplog'

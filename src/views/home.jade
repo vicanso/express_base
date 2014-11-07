@@ -3,6 +3,7 @@ block bodyContainer
   .homePage(ng-controller='HomePageController')
     p 测试页
     input(type='text', ng-model='user.name', jt-focus)
+    img.hidden(src='#{convertImgSrc("/images/icons/book.png")}')
   
   - fileImporter.import('/javascripts/book.js');
   

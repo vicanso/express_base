@@ -2,10 +2,13 @@
 var express = require('express');
 var config = require('./config');
 var path = require('path');
-var middleware = require('./helpers/middleware');
+var requireTree = require('require-tree');
+var middlewares = requireTree('./middlewares');
 var connectTimeout = require('connect-timeout');
 var monitor = require('./helpers/monitor');
 var JTCluster = require('jtcluster');
+
+
 /**
  * [initAppSetting 初始化app的配置信息]
  * @param  {[type]} app [description]
@@ -37,14 +40,20 @@ var initServer = function(){
     res.send('OK');
   });
 
-  app.use(middleware.jtInfoHandler());
+  app.use(middlewares.jtinfo(config.processName));
 
   //单位秒
   var staticMaxAge = 365 * 24 * 3600;
+  var staticPath = config.staticPath;
+  var staticUrlPrefix = config.staticUrlPrefix;
   if(config.env === 'development'){
     staticMaxAge = 0;
+    app.use(staticUrlPrefix, middlewares.static(path.join(staticPath, 'src'), staticMaxAge));
+
+  }else{
+    app.use(staticUrlPrefix, middlewares.static(path.join(staticPath, 'dist'), staticMaxAge));
   }
-  app.use('/static', middleware.static(path.join(__dirname, 'statics'), staticMaxAge));
+  
 
 
   app.use(require('method-override')());
@@ -53,15 +62,15 @@ var initServer = function(){
   app.use(bodyParser.json());
 
 
-  app.use('/jt', middleware.adminHandler('6a3f4389a53c889b623e67f385f28ab8e84e5029'));
+  app.use('/jt', middlewares.admin('6a3f4389a53c889b623e67f385f28ab8e84e5029'));
 
 
-  app.use(middleware.debugHandler());
+  app.use(middlewares.debug());
   
-
-  app.get('/', function(req, res, next){
-    res.send('xxxxx');
-  });
+  app.use(require('./router'));
+  // app.get('/', function(req, res, next){
+  //   res.send('xxxxx');
+  // });
 
   app.listen(config.port);
   console.info('server listen on:' + config.port);

@@ -17,6 +17,15 @@ var routeInfos = [
     template : 'index',
     middleware : [addImporter],
     handler : controllers.home
+  },
+  {
+    route : '/user',
+    handler : controllers.user
+  },
+  {
+    method : 'post',
+    route : '/httplog',
+    handler : controllers.http_log
   }
 ];
 

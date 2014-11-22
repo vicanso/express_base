@@ -1,3 +1,7 @@
+/*!
+ * 记录发送ajax请求的响应时间和状态码等
+ * @return {[type]} [description]
+ */
 ;(function(){
 'use strict';
 var module = angular.module('jt.service.httpLog', ['LocalStorageModule']);
@@ -21,13 +25,13 @@ module.factory('httpLog', ['$q', '$injector', 'localStorageService', function($q
 
     if(successLog.length || errorLog.length){
       $http.post(postUrl, httpLogStorage).success(function(res){
+        successLog.length = 0;
+        errorLog.length = 0;
+        save();
         setTimeout(post, postInterval);
       }).error(function(res){
         setTimeout(post, postInterval);
       });
-      successLog.length = 0;
-      errorLog.length = 0;
-      save();
     }
   };
 
@@ -43,10 +47,19 @@ module.factory('httpLog', ['$q', '$injector', 'localStorageService', function($q
   };
 
   // 如果一开始log已经有20个，直接往后台post
-  if(successLog.length + errorLog.length > 20){
+  if(successLog.length + errorLog.length > 10){
     setTimeout(post, 1);
   }else{
     setTimeout(post, postInterval);
+  }
+
+  // 判断该请求是否忽略其统计
+  var isIgnore = function(url){
+    if(url === postUrl || url.indexOf('httplog=false') != -1){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   var httpLog = {
@@ -58,14 +71,15 @@ module.factory('httpLog', ['$q', '$injector', 'localStorageService', function($q
       var config = res.config;
       var url = config.url;
       alertDeprecate(res.headers);
-      if(url !== postUrl){
-        var use = now() - config._createdAt;
-        successLog.push({
-          url : url,
-          use : use
-        });
-        save();
+      if(isIgnore(url)){
+        return res;
       }
+      var use = now() - config._createdAt;
+      successLog.push({
+        url : url,
+        use : use
+      });
+      save();
       return res;
     },
     requestError : function(rejection){
@@ -75,6 +89,9 @@ module.factory('httpLog', ['$q', '$injector', 'localStorageService', function($q
       alertDeprecate(rejection.headers);
       var config = rejection.config;
       var url = config.url;
+      if(isIgnore(url)){
+        return $q.reject(rejection);
+      }
       errorLog.push({
         url : url,
         status : rejection.status,

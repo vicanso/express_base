@@ -1,5 +1,5 @@
 doctype html
-html(lang='zh-CN')
+html(lang='zh-CN', ng-app='jtApp')
   head
     meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
@@ -12,9 +12,11 @@ html(lang='zh-CN')
     title #{title}
     include ./inlinejs
     //CSS_FILES_CONTAINER
+    if PATTERN
+      - importer.import('/component/debug.js');
     - importer.import('/component/normalize.css', '/component/angular.js', 'component/angular-local-storage.js');
 
-    - importer.import('/service/utils.js');
+    - importer.import('/service/utils.js', '/service/http_log.js', '/service/debug.js');
     //- - importer.import(['/components/angularjs/angular.js', '/components/script.js/dist/script.js', '/components/angular-local-storage/angular-local-storage.js']);
 
     //- - importer.import('/services/utils.js');
@@ -25,10 +27,10 @@ html(lang='zh-CN')
 
     //- if PATTERN
     //-   - importer.import('/components/debug/dist/debug.js');
-    //- - importer.import('/services/debug.js');
 
 
-    //- - importer.import('/javascripts/global.js');
+
+    - importer.import('/js/global.js');
 
   body
     block bodyContainer

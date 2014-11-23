@@ -26,6 +26,11 @@ var routeInfos = [
     method : 'post',
     route : '/httplog',
     handler : controllers.http_log
+  },
+  {
+    method : 'post',
+    route : '/exception',
+    handler : controllers.exception
   }
 ];
 

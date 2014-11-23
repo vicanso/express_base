@@ -6,7 +6,6 @@ var fn = function($scope, $http, debug){
   }).error(function(err){
 
   });
-  i.j = 1;
 };
 fn.$inject = ['$scope', '$http', 'debug'];
 

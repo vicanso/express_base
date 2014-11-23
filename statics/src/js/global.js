@@ -51,6 +51,53 @@ app.config(['localStorageServiceProvider', function(localStorageServiceProvider)
 
 
 
+app.run(['$http', '$timeout', '$window', function($http, $timeout, $window){
+  TIMING.end('js');
+  var statistics = function(){
+    var result = angular.extend({
+      timeline : TIMING.getLogs(),
+      view : {
+        width : $window.screen.width,
+        height : $window.screen.height
+      }
+    }, $window.performance);
+    $http.post('/statistics', result);
+  };
+
+  $window.onload = function(){
+    statistics();
+  }
+
+
+  if(CONFIG.env !== 'development'){
+    return;
+  }
+  var checkInterval = 10 * 1000;
+  var checkWatchers = function(){
+    var watchTotal = 0;
+    var fn = function(element){
+      if(element.data().hasOwnProperty('$scope')){
+        watchTotal += element.data().$scope.$$watchers.length;
+      }
+      angular.forEach(element.children(), function(child){
+        fn(angular.element(child));
+      });
+    };
+    fn(angular.element(document.body));
+    console.log('watcher total:' + watchTotal);
+    $timeout(function(){
+      checkWatchers();
+    }, checkInterval);
+  };
+  
+  $timeout(function(){
+    checkWatchers();
+  }, checkWatchers);
+  
+  // console.dir(window.performance);
+}]);
+
+
 
 
 

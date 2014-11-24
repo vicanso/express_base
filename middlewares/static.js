@@ -1,6 +1,7 @@
 'use strict';
 var express = require('express');
 var moment = require('moment');
+var util = require('util');
 /**
  * [exports 静态文件处理]
  * @param  {[type]} staticPath [静态文件所在目录]

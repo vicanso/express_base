@@ -5,15 +5,14 @@
       "/css/home.css"
     ],
     "js": [
-      "/component/debug.js",
       "/component/angular.js",
-      "component/angular-local-storage.js",
+      "/component/angular-local-storage.js",
       "/service/utils.js",
       "/service/http_log.js",
       "/service/debug.js",
       "/js/global.js",
       "/js/home.js"
     ],
-    "modifiedAt": "2014-11-22 18:53:28"
+    "modifiedAt": "2014-11-24 20:44:00"
   }
 }

@@ -7,7 +7,7 @@
 var module = angular.module('jt.service.httpLog', ['LocalStorageModule']);
 var now = Date.now || function(){
   return new Date().getTime();
-}
+};
 
 module.factory('httpLog', ['$q', '$injector', 'localStorageService', function($q, $injector, localStorageService){
   // 本地存储http log，定时将所有的log往服务器发送
@@ -37,7 +37,7 @@ module.factory('httpLog', ['$q', '$injector', 'localStorageService', function($q
 
   var save = function(){
     localStorageService.set('httpLog', httpLogStorage);
-  }
+  };
 
   var alertDeprecate = function(headers){
     var deprecate = headers('JT-Deprecate');
@@ -60,7 +60,7 @@ module.factory('httpLog', ['$q', '$injector', 'localStorageService', function($q
     }else{
       return false;
     }
-  }
+  };
 
   var httpLog = {
     request : function(config){

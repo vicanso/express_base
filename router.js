@@ -6,11 +6,21 @@ var routerHandler = require('./helpers/router');
 var config = require('./config');
 var router = express.Router();
 var importer = require('./middlewares/importer');
-var addImporter = importer({
-  prefix : config.staticUrlPrefix
-  // version : '123',
-  // versionMode : 1
-});
+var staticVerion = null;
+var importerOptions = {
+  prefix : config.staticUrlPrefix,
+  versionMode : 1
+};
+try{
+  staticVerion = require('./crc32');
+}catch(err){
+  console.error(err);
+}
+if(config.env !== 'development'){
+  importerOptions.version = staticVerion;
+}
+
+var addImporter = importer(importerOptions);
 
 var routeInfos = [
   {

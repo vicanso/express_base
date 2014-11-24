@@ -66,7 +66,7 @@ app.run(['$http', '$timeout', '$window', function($http, $timeout, $window){
 
   $window.onload = function(){
     statistics();
-  }
+  };
 
 
   if(CONFIG.env !== 'development'){

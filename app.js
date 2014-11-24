@@ -51,7 +51,7 @@ var initServer = function(){
   app.use(middlewares.http_log(httpLoggerType));
 
   // 添加一些信息到response header中
-  app.use(middlewares.jtinfo(config.processName));
+  app.use(middlewares.jtinfo(config.process));
 
   //单位秒
   var staticMaxAge = 365 * 24 * 3600;
@@ -64,7 +64,7 @@ var initServer = function(){
     app.use(staticUrlPrefix, middlewares.static(path.join(staticPath, 'src'), staticMaxAge));
 
   }else{
-    app.use(staticUrlPrefix, middlewares.static(path.join(staticPath, 'dist'), staticMaxAge));
+    app.use(staticUrlPrefix, middlewares.static(path.join(staticPath, 'dest'), staticMaxAge));
   }
   
 
@@ -81,6 +81,12 @@ var initServer = function(){
   // debug参数的处理，有_debug和_pattern等
   app.use(middlewares.debug());
   
+
+  app.use(function(req, res, next){
+    res.set('Cache-Control', 'no-cahce');
+    next();
+  });
+
   app.use(require('./router'));
 
   app.listen(config.port);

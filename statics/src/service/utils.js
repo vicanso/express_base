@@ -7,7 +7,7 @@ module.factory('utils', function(){
     now : Date.now || function(){
       return new Date().getTime();
     }
-  }
+  };
   return utils;
 });
 

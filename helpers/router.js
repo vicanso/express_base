@@ -110,7 +110,7 @@ var routerHandler = function(handler, template){
         return;
       }
       if(res.headersSent){
-        var err = new Error('the header has been sent');
+        err = new Error('the header has been sent');
         err.msg = '该请求已经发送';
         next(err);
         return;
@@ -132,7 +132,7 @@ var routerHandler = function(handler, template){
     };
     handler(req, res, cbf);
   };
-}
+};
 
 
 /**

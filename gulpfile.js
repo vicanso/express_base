@@ -79,7 +79,7 @@ gulp.task('static_version', ['static_copy_css_js', 'static_js', 'static_css'], f
     var version = bufferCrc32.unsigned(file.contents);
     crc32Infos['/' + file.relative] = version;
     var ext = path.extname(file.path);
-    file.path = file.path.substring(0, file.path.length - ext.length) + '_' + version + ext;
+    file.path = file.path.substring(0, file.path.length - ext.length) + '.' + version + ext;
     this.emit('data', file);
   };
 

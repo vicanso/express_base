@@ -1,0 +1,6 @@
+{
+  "except" : [
+    "/component/debug.js"
+  ],
+  "files" : []
+}

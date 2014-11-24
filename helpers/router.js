@@ -3,6 +3,7 @@ var _ = require('lodash');
 var moment = require('moment');
 var path = require('path');
 var fs = require('fs');
+var config = require('../config');
 var componentsFile = path.join(__dirname, '../components.json');
 
 
@@ -65,7 +66,7 @@ var render = function(res, template, data, next){
       next(err);
       return;
     }
-    if(importer){
+    if(importer && config.env === 'development'){
       html = appendJsAndCss(html, importer);
       logComponents(template, importer); 
     }

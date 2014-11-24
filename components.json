@@ -5,6 +5,7 @@
       "/css/home.css"
     ],
     "js": [
+      "/component/debug.js",
       "/component/angular.js",
       "/component/angular-local-storage.js",
       "/service/utils.js",
@@ -13,6 +14,6 @@
       "/js/global.js",
       "/js/home.js"
     ],
-    "modifiedAt": "2014-11-24 20:44:00"
+    "modifiedAt": "2014-11-24 21:30:08"
   }
 }

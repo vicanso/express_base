@@ -64,6 +64,7 @@ var initServer = function(){
     app.use(staticUrlPrefix, middlewares.static(path.join(staticPath, 'src'), staticMaxAge));
 
   }else{
+    app.use(staticUrlPrefix + '/src', middlewares.static(path.join(staticPath, 'src'), 0));
     app.use(staticUrlPrefix, middlewares.static(path.join(staticPath, 'dest'), staticMaxAge));
   }
   

@@ -66,9 +66,11 @@ var render = function(res, template, data, next){
       next(err);
       return;
     }
-    if(importer && config.env === 'development'){
+    if(importer){
       html = appendJsAndCss(html, importer);
-      logComponents(template, importer); 
+      if(config.env === 'development'){
+        logComponents(template, importer);
+      }
     }
     response(res, html, next);
   });

@@ -5,6 +5,7 @@ var uglify = require('gulp-uglify');
 var stylus = require('gulp-stylus');
 var base64 = require('gulp-base64');
 var cssmin = require('gulp-cssmin');
+var _ = require('lodash');
 var nib = require('nib');
 var copy = require('gulp-copy');
 var del = require('del');
@@ -39,7 +40,7 @@ gulp.task('clean:build', ['static_version'], function(cbf){
 });
 
 
-gulp.task('static_css', ['clean:dest'], function(){
+gulp.task('static_stylus', ['clean:dest'], function(){
   return gulp.src('statics/src/**/*.styl')
     .pipe(stylus({
       use : nib(),
@@ -50,12 +51,12 @@ gulp.task('static_css', ['clean:dest'], function(){
     .pipe(gulp.dest('statics/build'));
 });
 
-gulp.task('static_copy_css_js', ['clean:dest'], function(){
-  return gulp.src(['statics/**/*.css', 'statics/**/*.js'])
-    .pipe(copy('statics/build', {
-      prefix : 2
-    }));
+gulp.task('static_css', ['clean:dest'], function(){
+  return gulp.src(['statics/src/**/*.css'])
+    .pipe(cssmin())
+    .pipe(gulp.dest('statics/build'));
 });
+
 
 gulp.task('static_js', ['clean:dest'], function(){
   return gulp.src('statics/src/**/*.js')
@@ -70,10 +71,62 @@ gulp.task('static_copy_other', ['clean:dest'], function(){
     }));
 });
 
+var concatFiles = function(filePath, files){
+  var savePath = path.join(filePath, 'merge');
+  if(!fs.existsSync(savePath)){
+    fs.mkdirSync(savePath);
+  }
+  var names = [];
+  var data = [];
+  var ext = path.extname(files[0]);
+  _.forEach(files, function(file){
+    var desc = '/*' + file + '*/';
+    file = path.join(filePath, file);
+    var buf = fs.readFileSync(file, 'utf8');
+    names.push(path.basename(file, ext));
+    data.push(desc + '\n' + buf);
+  });
+  var name = names.join(',') + ext;
+  fs.writeFileSync(path.join(savePath, name), data.join('\n'));
+};
 
 
+gulp.task('static_merge', ['static_css', 'static_js', 'static_stylus'], function(cbf){
+  var merge = require('./merge');
+  var components = require('./components');
+  var buildPath = 'statics/build';
+  _.forEach(merge.files, function(files){
+    concatFiles(buildPath, files);
+  });
 
-gulp.task('static_version', ['static_copy_css_js', 'static_js', 'static_css'], function(){
+  var filterFiles = [];
+  if(merge.except){
+    filterFiles.push.apply(filterFiles, merge.except);
+  }
+  if(merge.files){
+    filterFiles.push.apply(filterFiles, merge.files);
+  }
+  filterFiles = _.flatten(filterFiles);
+  var getRestFiles = function(files){
+    return _.filter(files, function(file){
+      return !~_.indexOf(filterFiles, file);
+    });
+  };
+  _.forEach(components, function(component){
+    var cssFiles = getRestFiles(component.css);
+    if(cssFiles.length > 1){
+      concatFiles(buildPath, cssFiles);
+    }
+    var jsFiles = getRestFiles(component.js);
+    if(jsFiles.length > 1){
+      concatFiles(buildPath, jsFiles);
+    }
+  });
+  cbf();
+});
+
+
+gulp.task('static_version', ['static_merge'], function(){
   var crc32Infos = {};
   var crc32 = function(file){
     var version = bufferCrc32.unsigned(file.contents);
@@ -93,4 +146,4 @@ gulp.task('static_version', ['static_copy_css_js', 'static_js', 'static_css'], f
 
 
 
-gulp.task('default', ['clean:dest', 'jshint', 'static_copy_other', 'static_version', 'clean:build']);
+gulp.task('default', ['clean:dest', 'jshint', 'static_copy_other', 'static_merge', 'static_version', 'clean:build']);

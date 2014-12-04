@@ -7,6 +7,7 @@ var middlewares = requireTree('./middlewares');
 var connectTimeout = require('connect-timeout');
 var monitor = require('./helpers/monitor');
 var JTCluster = require('jtcluster');
+var mongodb = require('./helpers/mongodb');
 
 
 /**
@@ -23,8 +24,22 @@ var initAppSetting = function(app){
   app.locals.STATIC_URL_PREFIX = config.staticUrlPrefix;
 };
 
+/**
+ * [initMongodb 初始化mongodb]
+ * @param  {[type]} uri [description]
+ * @return {[type]}     [description]
+ */
+var initMongodb = function(uri){
+  if(!uri){
+    return ;
+  }
+  mongodb.init(uri);
+};
 
 var initServer = function(){
+
+  initMongodb(config.mongodbUri);
+
   //性能监控的间隔时间
   var monitorInterval = 10 * 1000;
   if(config.env === 'development'){

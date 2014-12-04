@@ -1,5 +1,5 @@
 ;(function(global){
-'use strice';
+'use strict';
 var fn = function($scope, $http, debug){
   $http.get('/user').success(function(res){
 

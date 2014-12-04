@@ -27,7 +27,7 @@ app.config(['localStorageServiceProvider', function(localStorageServiceProvider)
 }]).config(['$provide', function($provide){
   var params = ['$delegate', '$injector', function($delegate, $injector){
     return function(exception, cause){
-      if(CONFIG.env !== 'development'){
+      if(CONFIG.env === 'development'){
         var str = 'exception:' + exception.message + ', stack:' + exception.stack;
         if(cause){
           str += ', cause by ' + cause;

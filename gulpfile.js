@@ -13,6 +13,7 @@ var path = require('path');
 var through = require('through');
 var bufferCrc32 = require('buffer-crc32');
 var fs = require('fs');
+var moment = require('moment');
 gulp.task('jshint', ['clean:dest'], function(){
   var srcList = [
     '*.js',
@@ -145,5 +146,9 @@ gulp.task('static_version', ['static_merge'], function(){
 });
 
 
+gulp.task('version', function(cbf){
+  fs.writeFileSync('./version', moment().format('YYYY-MM-DD HH:mm:ss'));
+  cbf();
+});
 
-gulp.task('default', ['clean:dest', 'jshint', 'static_copy_other', 'static_merge', 'static_version', 'clean:build']);
+gulp.task('default', ['clean:dest', 'jshint', 'static_copy_other', 'static_merge', 'static_version', 'clean:build', 'version']);

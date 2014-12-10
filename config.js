@@ -39,7 +39,7 @@ exports.redis = (function(){
 exports.stats = (function(){
   var urlInfo = url.parse(program.stats || 'stats://localhost:6000');
   return {
-    port : urlInfo.port,
+    port : +urlInfo.port,
     host : urlInfo.hostname
   };
 })();

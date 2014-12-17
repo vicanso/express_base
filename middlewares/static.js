@@ -14,7 +14,7 @@ module.exports = function(staticPath, maxAge){
     if(maxAge){
       res.set({
         'Expires' : moment().add(maxAge, 'seconds').toString(),
-        'Cache-Control' : util.format('public, max-age=%d, s-max=3600', maxAge),
+        'Cache-Control' : util.format('public, max-age=%d, s-maxage=3600', maxAge),
         'Vary' : 'Accept-Encoding'
       });
     }else{

@@ -99,7 +99,7 @@ var initServer = function(){
   
 
   app.use(function(req, res, next){
-    res.set('Cache-Control', 'no-cahce');
+    res.set('Cache-Control', 'no-cahce, max-age=0, s-maxage=0');
     next();
   });
 

@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var fs = require('fs');
 var express = require('express');
 var path = require('path');
+var JTCluster = require('jtcluster');
 /**
  * [exports description]
  * @param  {[type]} token [description]
@@ -23,8 +24,19 @@ module.exports = function(token){
   router.get('/restart', validate, function(req, res){
     res.status(200).json({msg : 'success'});
     var timer = setTimeout(function(){
-      process.exit();
+      JTCluster.restartAll();
     }, 1000);
+  });
+
+
+  router.get('/workerinfos', validate, function(req, res){
+    JTCluster.getWorkersInfo(function(err, infos){
+      if(err){
+        res.send(err);
+      }else{
+        res.json(infos);
+      }
+    });
   });
 
 

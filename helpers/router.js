@@ -156,12 +156,16 @@ exports.init = function(router, routeInfos){
     if(!_.isArray(methods)){
       methods = [methods];
     }
-    if(!routeInfo.handler){
+    var handler = routeInfo.handler;
+    if(!handler){
       console.error('handler is undefined, ' + JSON.stringify(routeInfo));
+      return;
     }
-    var handler = routerHandler(routeInfo.handler, template);
-    _.each(routes, function(route){
-      _.each(methods, function(method){
+    if(handler.length === 3){
+      handler = routerHandler(handler, template);
+    }
+    _.forEach(routes, function(route){
+      _.forEach(methods, function(method){
         method = method.toLowerCase();
         router[method](route, middleware, handler);
       });

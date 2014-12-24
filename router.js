@@ -51,6 +51,12 @@ var routeInfos = [
     method : 'post',
     route : '/statistics',
     handler : controllers.statistics
+  },
+  {
+    route : '/redirect',
+    handler : function(req, res){
+      res.status(301).redirect('/');
+    }
   }
 ];
 

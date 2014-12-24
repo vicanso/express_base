@@ -24,7 +24,7 @@
     "debug": "^2.1.0",
     "express": "^4.10.2",
     "jade": "^1.7.0",
-    "jtcluster": "0.0.8",
+    "jtcluster": "0.1.0",
     "jtfileimporter": "^0.1.1",
     "lodash": "^2.4.1",
     "method-override": "^2.3.0",

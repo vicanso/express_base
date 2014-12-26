@@ -7,3 +7,4 @@ module.exports = function(req, res, cbf){
     msg : 'success'
   });
 };
+

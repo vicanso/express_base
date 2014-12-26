@@ -13,7 +13,6 @@ module.exports = function(req, res, cbf){
     request : timing.responseEnd - timing.requestStart,
     dom : timing.domComplete - timing.domLoading
   };
-  console.dir(result);
 
   cbf(null, {
     msg : 'success'

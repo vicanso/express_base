@@ -12,9 +12,10 @@ module.exports = function(staticPath, maxAge){
   var handler = express.static(staticPath);
   return function(req, res){
     if(maxAge){
+      var sMaxAge = Math.min(3600, maxAge);
       res.set({
         'Expires' : moment().add(maxAge, 'seconds').toString(),
-        'Cache-Control' : util.format('public, max-age=%d, s-maxage=3600', maxAge),
+        'Cache-Control' : util.format('public, max-age=%d, s-maxage=%d', maxAge, sMaxAge),
         'Vary' : 'Accept-Encoding'
       });
     }else{

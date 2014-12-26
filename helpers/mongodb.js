@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var _ = require('lodash');
 var requireTree = require('require-tree');
-
 var client = null;
 
 /**
@@ -45,7 +44,7 @@ exports.initModels = function(modelPath){
   }
   var models = requireTree(modelPath);
   _.forEach(models, function(model, name){
-    var name = name.charAt(0).toUpperCase() + name.substring(1);
+    name = name.charAt(0).toUpperCase() + name.substring(1);
     if(model.name){
       name = model.name;
     }

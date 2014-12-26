@@ -1,4 +1,6 @@
 'use strict';
+var jtLogger = require('jtlogger');
+jtLogger.appPath = __dirname + '/';
 var express = require('express');
 var config = require('./config');
 var path = require('path');
@@ -77,7 +79,6 @@ var initServer = function(){
     app.use(staticUrlPrefix, middlewares.static_dev(path.join(staticPath, 'src')));
     staticMaxAge = 0;
     app.use(staticUrlPrefix, middlewares.static(path.join(staticPath, 'src'), staticMaxAge));
-
   }else{
     app.use(staticUrlPrefix + '/src', middlewares.static(path.join(staticPath, 'src'), 0));
     app.use(staticUrlPrefix, middlewares.static(path.join(staticPath, 'dest'), staticMaxAge));
@@ -121,8 +122,6 @@ if(config.env === 'development'){
       {
         jtProcessName : 'cuttlefish'
       }
-    ],
-    error : console.error,
-    log : console.log
+    ]
   });
 }

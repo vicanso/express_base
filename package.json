@@ -26,6 +26,7 @@
     "jade": "^1.7.0",
     "jtcluster": "0.1.0",
     "jtfileimporter": "^0.1.1",
+    "jtlogger": "0.0.4",
     "lodash": "^2.4.1",
     "method-override": "^2.3.0",
     "moment": "^2.8.4",

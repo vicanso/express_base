@@ -8,7 +8,6 @@ var requireTree = require('require-tree');
 var middlewares = requireTree('./middlewares');
 var connectTimeout = require('connect-timeout');
 var monitor = require('./helpers/monitor');
-var JTCluster = require('jtcluster');
 var mongodb = require('./helpers/mongodb');
 
 
@@ -110,18 +109,6 @@ var initServer = function(){
   console.log('server listen on:' + config.port);
 };
 
-if(config.env === 'development'){
+exports.start = function(){
   initServer();
-}else{
-  new JTCluster({
-    handler : initServer,
-    envs : [
-      {
-        jtProcessName : 'tiger'
-      },
-      {
-        jtProcessName : 'cuttlefish'
-      }
-    ]
-  });
-}
+};

@@ -51,8 +51,9 @@ app.config(['localStorageServiceProvider', function(localStorageServiceProvider)
 
 
 
-app.run(['$http', '$timeout', '$window', function($http, $timeout, $window){
+app.run(['$http', '$timeout', '$window', 'debug', function($http, $timeout, $window, debug){
   TIMING.end('js');
+  debug = debug('app.run');
   var statistics = function(){
     var result = angular.extend({
       timeline : TIMING.getLogs(),
@@ -77,14 +78,17 @@ app.run(['$http', '$timeout', '$window', function($http, $timeout, $window){
     var watchTotal = 0;
     var fn = function(element){
       if(element.data().hasOwnProperty('$scope')){
-        watchTotal += element.data().$scope.$$watchers.length;
+        var watchers = element.data().$scope.$$watchers;
+        if(watchers){
+          watchTotal += watchers.length;
+        }
       }
       angular.forEach(element.children(), function(child){
         fn(angular.element(child));
       });
     };
     fn(angular.element(document.body));
-    console.log('watcher total:' + watchTotal);
+    debug('watcher total:' + watchTotal);
     $timeout(function(){
       checkWatchers();
     }, checkInterval);

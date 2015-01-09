@@ -15,8 +15,7 @@ exports.port = program.port || 10000;
 exports.env = process.env.NODE_ENV || 'development';
 
 exports.app = 'express_base';
-
-exports.process = process.env.jtProcessName || 'vicanso';
+exports.process = process.env.pm_id || '-1';
 
 // 静态文件url前缀
 exports.staticUrlPrefix = '/static';

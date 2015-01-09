@@ -103,12 +103,16 @@ var initServer = function(){
     next();
   });
 
+  app.use('/test', function(){
+    var i = 0;
+    while(++i){
+
+    }
+  });
+
   app.use(require('./router'));
 
   app.listen(config.port);
   console.log('server listen on:' + config.port);
 };
-
-exports.start = function(){
-  initServer();
-};
+initServer();

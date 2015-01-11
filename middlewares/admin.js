@@ -5,6 +5,7 @@ var express = require('express');
 var path = require('path');
 var async = require('async');
 var pm = require('../helpers/pm');
+var _ = require('lodash');
 
 /**
  * [exports description]
@@ -26,9 +27,7 @@ module.exports = function(token){
   router.get('/restart', validate, function(req, res){
     res.status(200).json({msg : 'success'});
     var timer = setTimeout(function(){
-      pm2.restart('all', function(){
-      });
-      // JTCluster.restartAll();
+      pm.restartAll(_.noop);
     }, 1000);
   });
 

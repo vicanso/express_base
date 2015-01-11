@@ -37,11 +37,10 @@ var getProcessInfos = function(processList){
   _.forEach(processList, function(info){
     if(info.name === app){
       var pm2Env = info.pm2_env;
-      // var uptime = Date.now() - pm2Env.pm_uptime;
-      // console.dir(pm2Env);
       result.push({
         pid : info.pid,
         id : pm2Env.pm_id,
+        unstableRestarts : pm2Env.unstable_restarts,
         uptime : format(Date.now() - pm2Env.pm_uptime),
         restartTime : pm2Env.restart_time,
         createdAt : moment(pm2Env.created_at).format('YYYY-MM-DD HH:mm:ss'),
@@ -54,6 +53,11 @@ var getProcessInfos = function(processList){
 };
 
 
+/**
+ * [list 列出所有进程]
+ * @param  {[type]} cbf [description]
+ * @return {[type]}     [description]
+ */
 exports.list = function(cbf){
   async.waterfall([
     pm2.connect,
@@ -61,6 +65,31 @@ exports.list = function(cbf){
     function(processList){
       var processInfos = getProcessInfos(processList);
       cbf(null, processInfos);
+    }
+  ], cbf);
+};
+
+
+/**
+ * [restartAll 重新所有的进程]
+ * @param  {[type]} cbf [description]
+ * @return {[type]}     [description]
+ */
+exports.restartAll = function(cbf){
+  var pid = process.pid;
+  async.waterfall([
+    exports.list,
+    function(processList, cbf){
+      _.forEach(processList, function(info){
+        if(info.pid === pid){
+          _.delay(function(){
+            pm2.restart(info.id, _.noop);
+          }, 1000);
+        }else{
+          pm2.restart(info.id, _.noop);
+        }
+      });
+      cbf();
     }
   ], cbf);
 };

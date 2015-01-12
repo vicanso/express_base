@@ -1,8 +1,13 @@
 'use strict';
+var config = require('./config');
 var jtLogger = require('jtlogger');
 jtLogger.appPath = __dirname + '/';
+if(config.env !== 'development'){
+  jtLogger.logPrefix = '[' + config.process + ']';
+}
+
 var express = require('express');
-var config = require('./config');
+
 var path = require('path');
 var requireTree = require('require-tree');
 var middlewares = requireTree('./middlewares');

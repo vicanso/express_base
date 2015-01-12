@@ -25,10 +25,17 @@ module.exports = function(token){
   var router = express.Router();
   //重启node
   router.get('/restart', validate, function(req, res){
-    res.status(200).json({msg : 'success'});
-    var timer = setTimeout(function(){
-      pm.restartAll(_.noop);
-    }, 1000);
+    pm.restartAll(function(err){
+      if(err){
+        res.status(500).send(err.message);
+      }else{
+        res.status(200).json({msg : 'success'});
+      }
+    });
+    // res.status(200).json({msg : 'success'});
+    // var timer = setTimeout(function(){
+    //   pm.restartAll(_.noop);
+    // }, 1000);
   });
 
 

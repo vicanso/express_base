@@ -2,11 +2,9 @@
 var path = require('path');
 var program = require('commander');
 var url = require('url');
-program.version('0.0.1')
+var pkg = require('./package');
+program.version(pkg.version)
   .option('-p, --port <n>', 'listen port', parseInt)
-  .option('--mongodb <n>', 'mongodb uri eg.mongodb://localhost:10020/test, mongodb://user:pwd@localhost:10020/test')
-  .option('--redis <n>', 'redis uri eg.redis://localhost:10010, redis://pwd@localhost:10010')
-  .option('--stats <n>', 'stats uri eg.stats://localhost:6000')
   .parse(process.argv);
 
 
@@ -25,23 +23,20 @@ exports.staticPath = path.join(__dirname, 'statics');
 exports.staticHosts = exports.env === 'development'? null : ['s1.vicanso.com', 's2.vicanso.com'];
 
 // redis服务器的配置
-exports.redis = (function(){
-  var urlInfo = url.parse(program.redis || 'redis://localhost:10010');
-  return {
-    port : +urlInfo.port,
-    host : urlInfo.hostname,
-    password : urlInfo.auth
-  };
-})();
+
+exports.redis = {
+  port : 4000,
+  host : 'localhost',
+  password : 'MY_REDIS_PWD'
+};
+
 
 // stats服务器的配置
-exports.stats = (function(){
-  var urlInfo = url.parse(program.stats || 'stats://localhost:6000');
-  return {
-    port : +urlInfo.port,
-    host : urlInfo.hostname
-  };
-})();
+exports.stats = {
+  port : 6000,
+  host : 'localhost'
+};
+
 
 // session的配置
 exports.session = {
@@ -52,4 +47,4 @@ exports.session = {
 
 
 // mongodb服务器的连接uri
-exports.mongodbUri = program.mongodb || 'mongodb://localhost:10020/test';
+exports.mongodbUri = 'mongodb://localhost:10020/test';

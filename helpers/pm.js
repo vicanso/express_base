@@ -81,13 +81,16 @@ exports.restartAll = function(cbf){
     exports.list,
     function(processList, cbf){
       _.forEach(processList, function(info){
-        if(info.pid === pid){
-          _.delay(function(){
-            pm2.restart(info.id, _.noop);
-          }, 1000);
-        }else{
-          pm2.restart(info.id, _.noop);
-        }
+        pm2.restart(info.id, _.noop);
+        // if(info.pid === pid){
+        //   console.log('delay pmid' + info.id);
+        //   _.delay(function(){
+        //     console.log('pmid' + info.id);
+        //     pm2.gracefulReload(info.id, _.noop);
+        //   }, 1000);
+        // }else{
+        //   pm2.gracefulReload(info.id, _.noop);
+        // }
       });
       cbf();
     }

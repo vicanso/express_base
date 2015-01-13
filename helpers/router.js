@@ -115,7 +115,7 @@ var routerHandler = function(handler, template){
       if(res.headersSent){
         err = new Error('the header has been sent');
         err.msg = '该请求已经发送';
-        next(err);
+        console.error(err);
         return;
       }
       if(data){

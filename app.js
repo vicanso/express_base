@@ -14,7 +14,7 @@ var middlewares = requireTree('./middlewares');
 var connectTimeout = require('connect-timeout');
 var monitor = require('./helpers/monitor');
 var mongodb = require('./helpers/mongodb');
-
+var domain = require('domain');
 
 /**
  * [initAppSetting 初始化app的配置信息]
@@ -56,8 +56,8 @@ var initServer = function(){
   var app = express();
   initAppSetting(app);
 
-  // http请求5秒超时
-  app.use(connectTimeout(5 * 1000));
+  // http请求10秒超时
+  app.use(connectTimeout(10 * 1000));
 
   //用于varnish haproxy检测node server是否可用
   app.use('/ping', function(req, res){
@@ -65,7 +65,7 @@ var initServer = function(){
   });
 
   // http log
-  var httpLoggerType = 'tiny';
+  var httpLoggerType = ':remote-addr ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"';
   if(config.env === 'development'){
     httpLoggerType = 'dev';
   }
@@ -87,7 +87,6 @@ var initServer = function(){
     app.use(staticUrlPrefix + '/src', middlewares.static(path.join(staticPath, 'src'), 0));
     app.use(staticUrlPrefix, middlewares.static(path.join(staticPath, 'dest'), staticMaxAge));
   }
-  
 
 
   app.use(require('method-override')());
@@ -108,16 +107,18 @@ var initServer = function(){
     next();
   });
 
-  app.use('/test', function(){
-    var i = 0;
-    while(++i){
-
-    }
-  });
-
   app.use(require('./router'));
 
   app.listen(config.port);
   console.log('server listen on:' + config.port);
 };
-initServer();
+
+if(config.env === 'development'){
+  initServer();
+}else{
+  var d = domain.create();
+  d.on('error', function(err){
+    console.error(err);
+  });
+  d.run(initServer);
+}

@@ -30,6 +30,14 @@ var init = function(uri, options){
   });
 };
 
+exports.close = function(cbf){
+  if(client){
+    client.close(cbf);
+  }else{
+    setImmediate(cbf);
+  }
+}
+
 exports.init = _.once(init);
 
 

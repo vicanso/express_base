@@ -1,7 +1,8 @@
 module.exports = function(req, res, cbf){
   var body = req.body;
   if(body){
-    console.error(JSON.stringify(body));
+    var err = new Error(JSON.stringify(body));
+    console.error(err);
   }
   cbf(null, {
     msg : 'success'

@@ -1,7 +1,7 @@
 'use strict';
 var toobusy = null;
 try{
-  toobusy = require('toobusy');
+  toobusy = require('toobusy-js');
 }catch(err){
   console.error('require toobusy error:' + err.message);
 }

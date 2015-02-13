@@ -23,6 +23,7 @@ app.config(['localStorageServiceProvider', function(localStorageServiceProvider)
   // localstorage的前缀
   localStorageServiceProvider.prefix = 'jt';
 }]).config(['$httpProvider', function($httpProvider){
+  $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   $httpProvider.interceptors.push('httpLog');
 }]).config(['$provide', function($provide){
   var params = ['$log', '$injector', function($log, $injector){

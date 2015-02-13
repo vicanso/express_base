@@ -25,6 +25,7 @@ if(config.env !== 'development'){
 }
 
 var addImporter = importer(importerOptions);
+var session = require('./middlewares/session')();
 
 var routeInfos = [
   {
@@ -35,6 +36,7 @@ var routeInfos = [
   },
   {
     route : '/user',
+    middleware : [session],
     handler : controllers.user
   },
   {

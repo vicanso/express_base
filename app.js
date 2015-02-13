@@ -102,11 +102,13 @@ var initServer = function(){
   
 
   app.use(function(req, res, next){
-    res.set('Cache-Control', 'no-cahce, max-age=0, s-maxage=0');
+    res.set('Cache-Control', 'no-cache, max-age=0, s-maxage=0');
     next();
   });
 
   app.use(require('./router'));
+
+  app.use(require('./controllers/error'));
 
   app.listen(config.port);
   console.log('server listen on:' + config.port);

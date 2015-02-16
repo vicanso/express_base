@@ -102,7 +102,7 @@ var initServer = function(){
   
 
   app.use(function(req, res, next){
-    res.set('Cache-Control', 'no-cache, max-age=0, s-maxage=0');
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0');
     next();
   });
 

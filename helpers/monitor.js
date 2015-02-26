@@ -7,7 +7,7 @@ try{
 }
 var MB = 1024 * 1024;
 var config = require('../config');
-var processName = config.process;
+var processId = config.processId;
 exports.start = function(interval){
   memoryLog(interval);
   if(toobusy){
@@ -21,9 +21,9 @@ var memoryLog = function(interval){
   var heapTotal = Math.floor(memoryUsage.heapTotal / MB);
   var heapUsed = Math.floor(memoryUsage.heapUsed / MB);
   
-  console.info('memory.rss.%s.%d', processName, rss);
-  console.info('memory.heapTotal.%s.%d', processName, heapTotal);
-  console.info('memory.heapUsed.%s.%d', processName, heapUsed);
+  console.info('process:%s memory.rss:%dMB', processId, rss);
+  console.info('process:%s memory.heapTotal:%dMB', processId, heapTotal);
+  console.info('process:%s memory.heapUsed:%dMB', processId, heapUsed);
   // TODO JTStats log
   
   var timer = setTimeout(function(){
@@ -41,7 +41,7 @@ var lagLog = function(interval){
     var lag = Math.ceil(lagTotal / lagCount);
     lagCount = 0;
     lagTotal = 0;
-    console.info('lag.%s.%d', processName, lag);
+    console.info('process:%s lag:%d', processId, lag);
     // TODO JTStats log
   }
   var timer = setTimeout(function(){

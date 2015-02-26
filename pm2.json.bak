@@ -1,0 +1,14 @@
+{
+  "name" : "express_base",
+  "instances" : 2,
+  "merge_logs" : true,
+  "max_memory_restart" : "200M",
+  "script" : "app.js",
+  "log_file" : "/vicanso/pm2/log/express_base.log",
+  "error_file" : "/vicanso/pm2/log/express_base-error.log",
+  "out_file" : "/vicanso/pm2/log/express_base-out.log",
+  "args" : ["-p", "10000", "--mongodb", "mongodb://user:pwd@black:5000/stats", "--redis", "redis://pwd@black:4000", "--stats", "stats://black:6000"],
+  "env" : {
+    "NODE_ENV" : "production"
+  }
+}

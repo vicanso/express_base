@@ -3,7 +3,7 @@ var config = require('../config');
 
 module.exports = function(err, req, res, next){
   console.error(err);
-  if(req.xhr || req.accepts('application/json')){
+  if(req.xhr){
     var data = {
       error : err.message,
       msg : err.msg

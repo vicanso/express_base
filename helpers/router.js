@@ -5,6 +5,7 @@ var path = require('path');
 var fs = require('fs');
 var config = require('../config');
 var componentsFile = path.join(__dirname, '../components.json');
+var domain = require('domain');
 
 
 /**
@@ -133,7 +134,14 @@ var routerHandler = function(handler, template){
         res.send('');
       }
     };
-    handler(req, res, cbf);
+    var d = domain.create();
+    d.on('error', function(err){
+      next(err);
+    });
+    d.run(function(){
+      handler(req, res, cbf);
+    });
+    
   };
 };
 

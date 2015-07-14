@@ -25,6 +25,13 @@ exports.staticPath = path.join(__dirname, 'statics');
 
 exports.staticHosts = exports.env === 'development'? null : ['s1.vicanso.com', 's2.vicanso.com'];
 
+// session的配置
+exports.session = {
+  secret : 'jenny&tree',
+  name : 'vicanso',
+  ttl : 3600 * 12
+};
+
 
 // stats服务器的配置
 exports.statsUri = program.stats || 'stats://localhost:6000';
@@ -32,4 +39,4 @@ exports.statsUri = program.stats || 'stats://localhost:6000';
 exports.redisUri = program.redis || 'redis://localhost:4000';
 
 // mongodb服务器的连接uri
-exports.mongodbUri = program.mongodb || 'mongodb://localhost:10020/stats';
+exports.mongodbUri = program.mongodb || 'mongodb://localhost:5000/stats';
